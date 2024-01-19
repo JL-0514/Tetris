@@ -1,1 +1,1 @@
-A tetris game made in Java.
+A tetris game written in Java.
