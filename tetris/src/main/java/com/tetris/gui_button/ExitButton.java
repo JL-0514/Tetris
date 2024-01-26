@@ -1,4 +1,4 @@
-package com.tetris.gui;
+package com.tetris.gui_button;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,14 +15,16 @@ public class ExitButton extends CommonButton {
 
     /**
      * Create an exit button.
+     * 
+     * @param theSetting The general setting of the game.
      */
-    public ExitButton(final Setting thSetting) {
-        super("EXIT", thSetting);
+    public ExitButton(final Setting theSetting) {
+        super("EXIT", theSetting);
         setup();
     }
 
     /**
-     * Set up the exit button by adding sction listener.
+     * Set up the on click action for the exit button.
      */
     private void setup() {
         addActionListener(new ActionListener() {

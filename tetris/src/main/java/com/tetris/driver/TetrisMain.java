@@ -2,7 +2,7 @@ package com.tetris.driver;
 
 import java.awt.EventQueue;
 
-import com.tetris.gui.TetrisFrame;
+import com.tetris.gui_scene.TetrisFrame;
 
 /**
  * The driver class for the tetris game.

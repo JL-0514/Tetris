@@ -1,4 +1,4 @@
-package com.tetris.gui;
+package com.tetris.gui_button;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -34,9 +34,9 @@ public class CommonButton extends JButton {
      * @param theText The text in the button.
      * @param thSetting The setting applies to the button.
      */
-    public CommonButton(final String theText, final Setting thSetting) {
+    public CommonButton(final String theText, final Setting theSetting) {
         super(theText);
-        mySetting = thSetting;
+        mySetting = theSetting;
         setup();
     }
 
@@ -55,6 +55,10 @@ public class CommonButton extends JButton {
         setContentAreaFilled(false);
         setOpaque(true);
         addChangeListener(new ChangeListener() {
+            /**
+             * {@inheritDoc}
+             * Change background color of the button when hovering and pressing.
+             */
             @Override
             public void stateChanged(final ChangeEvent e) {
                 if (getModel().isPressed()) {

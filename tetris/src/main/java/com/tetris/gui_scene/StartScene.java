@@ -1,26 +1,52 @@
-package com.tetris.gui;
+package com.tetris.gui_scene;
 
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.tetris.gui_button.CommonButton;
+import com.tetris.gui_button.ExitButton;
+import com.tetris.gui_button.SettingButton;
 import com.tetris.model.Setting;
 
+/**
+ * The start scene of the game.
+ * Contains the game title, play button, setting button, and exit button.
+ * 
+ * @author Jiameng Li
+ * @version 1.0
+ */
 public class StartScene extends JPanel {
 
+    /** The general setting of the game. */
     private Setting mySetting;
 
-    public StartScene(final Setting thSetting) {
+    /** The main frame. */
+    private TetrisFrame myFrame;
+
+    /**
+     * Create a start scene.
+     * 
+     * @param thSetting The general setting of the game.
+     * @param theFrame The main frame.
+     */
+    public StartScene(final Setting thSetting, final TetrisFrame theFrame) {
         super();
         mySetting = thSetting;
+        myFrame = theFrame;
         setup();
     }
 
+    /**
+     * Set up the start scene.
+     */
     private void setup() {
         setBackground(mySetting.getBackground());
         setLayout(new GridBagLayout());
@@ -39,17 +65,27 @@ public class StartScene extends JPanel {
 
         // Play button
         final CommonButton playBtn = new CommonButton("PLAY", mySetting);
-        gbc.gridy = 1;
+        playBtn.addActionListener(new ActionListener() {
+            /**
+             * {@inheritDoc}
+             * Open the game scene when clicked.
+             */
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                myFrame.toScene("Game");
+            }
+        });
+        gbc.gridy++;
         add(playBtn, gbc);
 
         // Setting button
-        final CommonButton settingBtn = new CommonButton("SETTING", mySetting);
-        gbc.gridy = 2;
+        final SettingButton settingBtn = new SettingButton(mySetting, myFrame);
+        gbc.gridy++;
         add(settingBtn, gbc);
 
         // Exit button
         final ExitButton exitBtn = new ExitButton(mySetting);
-        gbc.gridy = 3;
+        gbc.gridy++;
         add(exitBtn, gbc);
     }
     
