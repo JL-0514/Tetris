@@ -28,7 +28,7 @@ public class CommonButton extends JButton implements PropertyChangeListener {
     private static final Dimension BUTTON_SIZE = new Dimension(230, 50);
 
     /** Setting applies to the button. */
-    private Setting mySetting;
+    private final Setting mySetting;
 
     /**
      * Create a button.

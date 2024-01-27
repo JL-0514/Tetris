@@ -6,9 +6,9 @@ import com.tetris.model.Setting;
 
 public class GameScene extends JPanel{
 
-    private Setting mySetting;
+    private final Setting mySetting;
 
-    private TetrisFrame myFrame;
+    private final TetrisFrame myFrame;
 
     public GameScene(final Setting theSetting, final TetrisFrame theFrame) {
         super();

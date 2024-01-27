@@ -14,6 +14,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 
 import com.tetris.gui_button.CommonButton;
 import com.tetris.model.Setting;
@@ -30,10 +31,10 @@ public class SettingScene extends JPanel {
     private String myPrevScene;
 
     /** The general setting of the game. */
-    private Setting mySetting;
+    private final Setting mySetting;
 
     /** The main frame. */
-    private TetrisFrame myFrame;
+    private final TetrisFrame myFrame;
 
     /** The button corrsponding to the operation whose key will be replaced. */
     private CommonButton mySelectedButton;
@@ -67,23 +68,36 @@ public class SettingScene extends JPanel {
         
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2, 10, 2, 10);
-        final Font labelFont = new Font("Helvetica", Font.BOLD , 25);
+        Font labelFont = new Font("Helvetica", Font.BOLD , 25);
+        Border labelBorder = BorderFactory.createEmptyBorder(25, 0, 25, 0);
 
         // Label for keyboard setting
-        final JLabel keyLabel = createLabel("KEYBOARD", labelFont);
-        gbc.gridwidth = 2;
+        final JLabel keyLabel = createLabel("KEYBOARD", labelFont, labelBorder);
+        gbc.insets = new Insets(0, 20, 0, 20);
         gbc.gridx = 0;
         gbc.gridy = 0;
         add(keyLabel, gbc);
 
+        // Label for background setting
+        final JLabel bgLabel = createLabel("BACKGROUND", labelFont, labelBorder);
+        gbc.gridy = 0;
+        gbc.gridx = 1;
+        add(bgLabel, gbc);
+
+        // Label for background setting
+        final JLabel soundLabel = createLabel("SOUND", labelFont, labelBorder);
+        gbc.gridy = 0;
+        gbc.gridx = 2;
+        add(soundLabel, gbc);
+
         // Buttons used to select keys
-        gbc.gridwidth = 1;
-        gbc.anchor = GridBagConstraints.EAST;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.gridx = 0;
+        labelFont = new Font("Helvetica", Font.BOLD , 15);
+        labelBorder = BorderFactory.createEmptyBorder(10, 0, 2, 0);
         for (String s : mySetting.getAllOperations()) {
             // Label for the button
-            final JLabel btnLabel = createLabel(s, CommonButton.TEXT_FONT);
-            gbc.gridx = 0;
+            final JLabel btnLabel = createLabel(s, labelFont, labelBorder);
             gbc.gridy++;
             add(btnLabel, gbc);
             // The button
@@ -102,18 +116,15 @@ public class SettingScene extends JPanel {
                 }
                 
             });
-            gbc.gridx = 1;
+            gbc.gridy++;
             add(btn, gbc);
         }
-        
-        // Label for background setting
-        final JLabel bgLabel = createLabel("BACKGROUND", labelFont);
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.gridy = 0;
-        gbc.gridx = 2;
-        add(bgLabel, gbc);
 
         // Buttons used to change background color
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.gridheight = 2;
         for (String s : mySetting.getAvailableColors()) {
             final CommonButton btn = new CommonButton(s, mySetting);
             btn.addActionListener(new ActionListener() {
@@ -126,15 +137,9 @@ public class SettingScene extends JPanel {
                     mySetting.setColor(((CommonButton) e.getSource()).getText());
                 }
             });
-            gbc.gridy++;
             add(btn, gbc);
+            gbc.gridy += 2;
         }
-
-        // Label for background setting
-        final JLabel soundLabel = createLabel("SOUND", labelFont);
-        gbc.gridy = 0;
-        gbc.gridx = 3;
-        add(soundLabel, gbc);
 
         // Back button
         final CommonButton backBtn = new CommonButton("BACK", mySetting);
@@ -148,10 +153,10 @@ public class SettingScene extends JPanel {
                 myFrame.toScene(myPrevScene);
             }
         });
-        gbc.gridx = 0;
-        gbc.gridy = 7;
-        gbc.insets = new Insets(70, 0, 10, 0);
-        gbc.anchor = GridBagConstraints.WEST;
+        gbc.gridx = 2;
+        gbc.gridy = 13;
+        gbc.gridheight = 1;
+        gbc.anchor = GridBagConstraints.EAST;
         add(backBtn, gbc);
     }
 
@@ -160,13 +165,15 @@ public class SettingScene extends JPanel {
      * 
      * @param theLabel The text for the label.
      * @param theFont The font for the label.
+     * @param theBorder The border of the label.
      * @return The label created.
      */
-    private JLabel createLabel(final String theLabel, final Font theFont) {
+    private JLabel createLabel(final String theLabel, final Font theFont, final Border theBorder) {
         final JLabel label = new JLabel(theLabel);
-        label.setBorder(BorderFactory.createEmptyBorder(25, 0, 15, 20));
+        label.setBorder(theBorder);
         label.setFont(theFont);
         label.setForeground(mySetting.getForeground());
+        label.setHorizontalAlignment(JLabel.CENTER);
         return label;
     }
 

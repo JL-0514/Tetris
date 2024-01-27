@@ -17,10 +17,10 @@ import com.tetris.model.Setting;
 public class SettingChangeListener implements PropertyChangeListener{
 
     /** The panel that listen to changes. */
-    private JPanel myPanel;
+    private final JPanel myPanel;
 
     /** The general setting of the game. */
-    private Setting mySetting;
+    private final Setting mySetting;
 
     /**
      * Create a setting change listener.

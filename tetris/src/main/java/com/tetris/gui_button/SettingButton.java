@@ -15,7 +15,7 @@ import com.tetris.model.Setting;
 public class SettingButton extends CommonButton {
 
     /** The main frame. */
-    private TetrisFrame myFrame;
+    private final TetrisFrame myFrame;
 
     /**
      * Create a settign button.

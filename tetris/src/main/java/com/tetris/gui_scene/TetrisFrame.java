@@ -81,6 +81,9 @@ public class TetrisFrame extends JFrame {
      */
     public void toScene(final String theScene) {
         myLayout.show(myContainer, theScene);
+        if (theScene.equals("Setting")) {
+            mySettingScene.setPrevScene(myCurrentScene);
+        }
         myCurrentScene = theScene;
     }
     
