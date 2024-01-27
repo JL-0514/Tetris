@@ -3,6 +3,8 @@ package com.tetris.gui_button;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -17,10 +19,10 @@ import com.tetris.model.Setting;
  * @author Jiameng Li
  * @version 1.0
  */
-public class CommonButton extends JButton {
+public class CommonButton extends JButton implements PropertyChangeListener {
 
     /** Font of the text in the button. */
-    private static final Font TEXT_FONT = new Font("Helvetica", Font.BOLD , 20);
+    public static final Font TEXT_FONT = new Font("Helvetica", Font.BOLD , 20);
 
     /** Size of the button. */
     private static final Dimension BUTTON_SIZE = new Dimension(230, 50);
@@ -47,6 +49,7 @@ public class CommonButton extends JButton {
         setFont(TEXT_FONT);
         setForeground(mySetting.getForeground());
         setBackground(mySetting.getBackground());
+        mySetting.addPropertyChangeListener(this);
         setFocusPainted(false);
         setPreferredSize(BUTTON_SIZE);
         setBorder(BorderFactory.createLineBorder(mySetting.getForeground(), 10));
@@ -70,6 +73,16 @@ public class CommonButton extends JButton {
                 }
             }
         });
+    }
+
+    /**
+     * {@inheritDoc}
+     * Change the border color of the button when background color change.
+     */
+    public void propertyChange(final PropertyChangeEvent e) {
+        if (e.getPropertyName().equals("color")) {
+            setBorder(BorderFactory.createLineBorder(mySetting.getForeground(), 10));
+        }
     }
     
 }

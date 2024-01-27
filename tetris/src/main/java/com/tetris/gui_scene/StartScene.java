@@ -49,9 +49,11 @@ public class StartScene extends JPanel {
      */
     private void setup() {
         setBackground(mySetting.getBackground());
+        setForeground(mySetting.getForeground());
+        mySetting.addPropertyChangeListener(new SettingChangeListener(this, mySetting));
+        
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(10, 0, 10, 0);
 
         // Title

@@ -1,6 +1,6 @@
 package com.tetris.driver;
 
-import java.awt.EventQueue;
+import javax.swing.SwingUtilities;
 
 import com.tetris.gui_scene.TetrisFrame;
 
@@ -18,7 +18,7 @@ public class TetrisMain {
      * @param args Command line arguments
      */
     public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
+        SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 new TetrisFrame();
             }

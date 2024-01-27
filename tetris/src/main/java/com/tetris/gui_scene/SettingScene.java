@@ -6,8 +6,12 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -31,6 +35,12 @@ public class SettingScene extends JPanel {
     /** The main frame. */
     private TetrisFrame myFrame;
 
+    /** The button corrsponding to the operation whose key will be replaced. */
+    private CommonButton mySelectedButton;
+
+    /** All buttons used to replace keys for their correspondin operations. */
+    private Map<JButton, String> myKeySelectButtons;
+
     /**
      * Create a setting scene.
      * 
@@ -42,6 +52,8 @@ public class SettingScene extends JPanel {
         myPrevScene = "Start";
         mySetting = theSetting;
         myFrame = theFrame;
+        myKeySelectButtons = null;
+        myKeySelectButtons = new HashMap<>();
         setup();
     }
 
@@ -50,17 +62,79 @@ public class SettingScene extends JPanel {
      */
     private void setup() {
         setBackground(mySetting.getBackground());
+        setForeground(mySetting.getForeground());
+        mySetting.addPropertyChangeListener(new SettingChangeListener(this, mySetting));
+        
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(10, 0, 10, 0);
-        Font labelFont = new Font("Algerian", Font.BOLD, 20);
+        gbc.insets = new Insets(2, 10, 2, 10);
+        final Font labelFont = new Font("Helvetica", Font.BOLD , 25);
 
         // Label for keyboard setting
         final JLabel keyLabel = createLabel("KEYBOARD", labelFont);
+        gbc.gridwidth = 2;
         gbc.gridx = 0;
         gbc.gridy = 0;
         add(keyLabel, gbc);
+
+        // Buttons used to select keys
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.EAST;
+        for (String s : mySetting.getAllOperations()) {
+            // Label for the button
+            final JLabel btnLabel = createLabel(s, CommonButton.TEXT_FONT);
+            gbc.gridx = 0;
+            gbc.gridy++;
+            add(btnLabel, gbc);
+            // The button
+            final String btnText = mySetting.getKey(s) == KeyEvent.VK_SPACE ? 
+                                   "SPACE" : Character.toString((char) mySetting.getKey(s));
+            final CommonButton btn = new CommonButton(btnText, mySetting);
+            myKeySelectButtons.put(btn, s);
+            btn.addActionListener(new ActionListener() {
+                /**
+                 * {@inheritDoc}
+                 * Record that this key is waiting to be change.
+                 */
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    mySelectedButton = (CommonButton) e.getSource();
+                }
+                
+            });
+            gbc.gridx = 1;
+            add(btn, gbc);
+        }
+        
+        // Label for background setting
+        final JLabel bgLabel = createLabel("BACKGROUND", labelFont);
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.gridy = 0;
+        gbc.gridx = 2;
+        add(bgLabel, gbc);
+
+        // Buttons used to change background color
+        for (String s : mySetting.getAvailableColors()) {
+            final CommonButton btn = new CommonButton(s, mySetting);
+            btn.addActionListener(new ActionListener() {
+                /**
+                 * {@inheritDoc}
+                 * Change background color when clicked.
+                 */
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    mySetting.setColor(((CommonButton) e.getSource()).getText());
+                }
+            });
+            gbc.gridy++;
+            add(btn, gbc);
+        }
+
+        // Label for background setting
+        final JLabel soundLabel = createLabel("SOUND", labelFont);
+        gbc.gridy = 0;
+        gbc.gridx = 3;
+        add(soundLabel, gbc);
 
         // Back button
         final CommonButton backBtn = new CommonButton("BACK", mySetting);
@@ -74,7 +148,10 @@ public class SettingScene extends JPanel {
                 myFrame.toScene(myPrevScene);
             }
         });
-        gbc.gridy++;
+        gbc.gridx = 0;
+        gbc.gridy = 7;
+        gbc.insets = new Insets(70, 0, 10, 0);
+        gbc.anchor = GridBagConstraints.WEST;
         add(backBtn, gbc);
     }
 
@@ -87,7 +164,7 @@ public class SettingScene extends JPanel {
      */
     private JLabel createLabel(final String theLabel, final Font theFont) {
         final JLabel label = new JLabel(theLabel);
-        label.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+        label.setBorder(BorderFactory.createEmptyBorder(25, 0, 15, 20));
         label.setFont(theFont);
         label.setForeground(mySetting.getForeground());
         return label;

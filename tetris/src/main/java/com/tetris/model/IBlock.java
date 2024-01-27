@@ -2,6 +2,12 @@ package com.tetris.model;
 
 import java.awt.Color;
 
+/**
+ * The I-Block.
+ * 
+ * @author Jiameng Li
+ * @version 1.0
+ */
 public class IBlock extends AbstractBlock {
 
     /** The shape of block after rotated zero degree. */
@@ -12,7 +18,7 @@ public class IBlock extends AbstractBlock {
         {0, 0, 0, 0}
     };
     
-    /** The shape of block after rotated ninety degrees. */
+    /** The shape of block after rotated ninety degrees clockwise. */
     private static final int[][] NINETY = {
         {0, 0, 1, 0},
         {0, 0, 1, 0},

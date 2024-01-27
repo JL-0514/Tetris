@@ -18,6 +18,11 @@ public interface Block {
     /**
      * Rotate the block clockwise by 90 degrees.
      */
-    public void rotate();
+    public void rotateClockwise();
+
+    /**
+     * Rotate the block counterclockwise by 90 degrees.
+     */
+    public void rotateCounterclockwise();
     
 }
