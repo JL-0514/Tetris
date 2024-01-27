@@ -23,6 +23,9 @@ public class Setting {
     /** The foreground color of the game. */
     private Color myForeground;
 
+    /** The volume of the sound. Min 0, max 100. */
+    private int myVolume;
+
     /** Map that contains all operations can be used on block and their corresponding keys. */
     private final Map<String, Integer> myKeys;
 
@@ -39,6 +42,7 @@ public class Setting {
         super();
         myBackground = Color.BLACK;
         myForeground = Color.WHITE;
+        myVolume = 80;
         myKeys = new LinkedHashMap<>();
         myColors = new LinkedHashMap<>();
         myPCS = new PropertyChangeSupport(this);
@@ -80,18 +84,6 @@ public class Setting {
     }
 
     /**
-     * Change the corresponding key for the given operation.
-     * 
-     * @param theOperation The operation.
-     * @param theKey The key code for new corresponding key.
-     */
-    public void setKey(final String theOperation, final int theKey) {
-        if (myKeys.containsKey(theOperation)) {
-            myKeys.replace(theOperation, theKey);
-        }
-    }
-
-    /**
      * Get the background color of the game.
      * 
      * @return The background color of the game.
@@ -119,6 +111,36 @@ public class Setting {
     }
 
     /**
+     * Get the volume of the sound.
+     * 
+     * @return The volume of the sound.
+     */
+    public int getVolume() {
+        return myVolume;
+    }
+
+    /**
+     * Change the volume of the sound.
+     * 
+     * @param theVolume The new volume of the sound.
+     */
+    public void setVolume(final int theVolume) {
+        myVolume = theVolume;
+    }
+
+    /**
+     * Change the corresponding key for the given operation.
+     * 
+     * @param theOperation The operation.
+     * @param theKey The key code for new corresponding key.
+     */
+    public void setKey(final String theOperation, final int theKey) {
+        if (myKeys.containsKey(theOperation)) {
+            myKeys.replace(theOperation, theKey);
+        }
+    }
+
+    /**
      * Change the background and foreground color based on the given color. 
      * 
      * @param theColor The new background color.
@@ -130,6 +152,8 @@ public class Setting {
         myForeground = colors[1];
         myPCS.firePropertyChange("color", oldBG, myBackground);
     }
+
+
 
     /**
      * Add property change listener to the property change support.

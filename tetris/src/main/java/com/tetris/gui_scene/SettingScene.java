@@ -14,7 +14,10 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.border.Border;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import com.tetris.gui_button.CommonButton;
 import com.tetris.model.Setting;
@@ -68,38 +71,59 @@ public class SettingScene extends JPanel {
         
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
+        
+        setupCategoryLabels(gbc);
+        setupKeySelectButtons(gbc);
+        setupBackgroundButtons(gbc);
+        setupSoundSlider(gbc);
+        setupBackButton(gbc);    
+    }
+
+    /**
+     * Set up label for different categories of settings.
+     * 
+     * @param theGBC The grid bag constraints for the layout of the setting scene.
+     */
+    private void setupCategoryLabels(final GridBagConstraints theGBC) {
         Font labelFont = new Font("Helvetica", Font.BOLD , 25);
         Border labelBorder = BorderFactory.createEmptyBorder(25, 0, 25, 0);
 
         // Label for keyboard setting
         final JLabel keyLabel = createLabel("KEYBOARD", labelFont, labelBorder);
-        gbc.insets = new Insets(0, 20, 0, 20);
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        add(keyLabel, gbc);
+        theGBC.insets = new Insets(0, 20, 0, 20);
+        theGBC.gridx = 0;
+        theGBC.gridy = 0;
+        add(keyLabel, theGBC);
 
         // Label for background setting
         final JLabel bgLabel = createLabel("BACKGROUND", labelFont, labelBorder);
-        gbc.gridy = 0;
-        gbc.gridx = 1;
-        add(bgLabel, gbc);
+        theGBC.gridy = 0;
+        theGBC.gridx = 1;
+        add(bgLabel, theGBC);
 
-        // Label for background setting
+        // Label for sound setting
         final JLabel soundLabel = createLabel("SOUND", labelFont, labelBorder);
-        gbc.gridy = 0;
-        gbc.gridx = 2;
-        add(soundLabel, gbc);
+        theGBC.gridy = 0;
+        theGBC.gridx = 2;
+        add(soundLabel, theGBC);
+    }
 
-        // Buttons used to select keys
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.gridx = 0;
-        labelFont = new Font("Helvetica", Font.BOLD , 15);
-        labelBorder = BorderFactory.createEmptyBorder(10, 0, 2, 0);
+    /**
+     * Set up buttons used to select keys.
+     * 
+     * @param theGBC The grid bag constraints for the layout of the setting scene.
+     */
+    private void setupKeySelectButtons(final GridBagConstraints theGBC) {
+        theGBC.anchor = GridBagConstraints.WEST;
+        theGBC.gridx = 0;
+        theGBC.gridy = 0;
+        Font labelFont = new Font("Helvetica", Font.BOLD , 15);
+        Border labelBorder = BorderFactory.createEmptyBorder(10, 0, 2, 0);
         for (String s : mySetting.getAllOperations()) {
             // Label for the button
             final JLabel btnLabel = createLabel(s, labelFont, labelBorder);
-            gbc.gridy++;
-            add(btnLabel, gbc);
+            theGBC.gridy++;
+            add(btnLabel, theGBC);
             // The button
             final String btnText = mySetting.getKey(s) == KeyEvent.VK_SPACE ? 
                                    "SPACE" : Character.toString((char) mySetting.getKey(s));
@@ -113,18 +137,25 @@ public class SettingScene extends JPanel {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     mySelectedButton = (CommonButton) e.getSource();
+                    // TODO Implement the feature to replace keys.
                 }
                 
             });
-            gbc.gridy++;
-            add(btn, gbc);
+            theGBC.gridy++;
+            add(btn, theGBC);
         }
+    }
 
-        // Buttons used to change background color
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.gridheight = 2;
+    /**
+     * Set up buttons used to select background color.
+     * 
+     * @param theGBC The grid bag constraints for the layout of the setting scene.
+     */
+    private void setupBackgroundButtons(final GridBagConstraints theGBC) {
+        theGBC.gridx = 1;
+        theGBC.gridy = 2;
+        theGBC.anchor = GridBagConstraints.NORTH;
+        theGBC.gridheight = 2;
         for (String s : mySetting.getAvailableColors()) {
             final CommonButton btn = new CommonButton(s, mySetting);
             btn.addActionListener(new ActionListener() {
@@ -137,11 +168,53 @@ public class SettingScene extends JPanel {
                     mySetting.setColor(((CommonButton) e.getSource()).getText());
                 }
             });
-            add(btn, gbc);
-            gbc.gridy += 2;
+            add(btn, theGBC);
+            theGBC.gridy += 2;
         }
+    }
 
-        // Back button
+    /**
+     * Set up the slider used to adjust the volume of the sound.
+     * 
+     * @param theGBC The grid bag constraints for the layout of the setting scene.
+     */
+    private void setupSoundSlider(final GridBagConstraints theGBC) {
+        theGBC.gridheight = 10;
+        theGBC.gridx = 2;
+        theGBC.gridy = 2;
+        theGBC.fill = GridBagConstraints.VERTICAL;
+        final JSlider slider = new JSlider(JSlider.VERTICAL, 0, 100, mySetting.getVolume());
+        slider.setBackground(mySetting.getBackground());
+        slider.setForeground(mySetting.getForeground());
+        slider.setFont( new Font("Helvetica", Font.BOLD , 15));
+        slider.setBorder(BorderFactory.createEmptyBorder(5, 15, 0, 15));
+        slider.setMajorTickSpacing(10);
+        slider.setMinorTickSpacing(1);
+        slider.setPaintTicks(true);
+        slider.setPaintLabels(true);
+        slider.setSnapToTicks(true);
+        slider.setFocusable(false);
+        slider.setUI(new SliderUI(slider));
+        slider.addChangeListener(new ChangeListener() {
+            /**
+             * {@inheritDoc}
+             * Adjust sound based on the value of the slider.
+             */
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                mySetting.setVolume(slider.getValue());
+            }
+            
+        });
+        add(slider, theGBC);
+    }
+
+    /**
+     * Set up button used to go back to the previous scene.
+     * 
+     * @param theGBC The grid bag constraints for the layout of the setting scene.
+     */
+    private void setupBackButton(final GridBagConstraints theGBC) {
         final CommonButton backBtn = new CommonButton("BACK", mySetting);
         backBtn.addActionListener(new ActionListener() {
             /**
@@ -153,11 +226,12 @@ public class SettingScene extends JPanel {
                 myFrame.toScene(myPrevScene);
             }
         });
-        gbc.gridx = 2;
-        gbc.gridy = 13;
-        gbc.gridheight = 1;
-        gbc.anchor = GridBagConstraints.EAST;
-        add(backBtn, gbc);
+        theGBC.gridx = 3;
+        theGBC.gridy = 13;
+        theGBC.gridheight = 1;
+        theGBC.anchor = GridBagConstraints.EAST;
+        theGBC.fill = GridBagConstraints.NONE;
+        add(backBtn, theGBC);
     }
 
     /**
