@@ -64,7 +64,7 @@ public class SliderUI extends BasicSliderUI {
             g2.fillRect(slider.getWidth() / 2 - thumbRect.width - 10, 5, thumbRect.width + 7, slider.getHeight());
             // Paint a line that indicate the value as the thumb moves
             g2.setColor(slider.getBackground());
-            g2.fillRect(slider.getWidth() / 2 - thumbRect.width - 5, thumbRect.y + 3, 6, slider.getHeight() - thumbRect.y);
+            g2.fillRect(slider.getWidth() / 2 - thumbRect.width - 5, thumbRect.y + 3, 7, slider.getHeight() - thumbRect.y);
         } else {
             super.paintTrack(theGraphics);
         }

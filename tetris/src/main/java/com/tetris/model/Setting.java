@@ -3,6 +3,7 @@ package com.tetris.model;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -71,6 +72,15 @@ public class Setting {
      */
     public Set<String> getAllOperations() {
         return myKeys.keySet();
+    }
+
+    /**
+     * Get all keys for operations.
+     * 
+     * @return All keys for operations.
+     */
+    public Collection<Integer> getAllKeys() {
+        return myKeys.values();
     }
 
     /**

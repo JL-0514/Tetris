@@ -1,11 +1,13 @@
 package com.tetris.gui_scene;
 
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,6 +47,9 @@ public class SettingScene extends JPanel {
     /** All buttons used to replace keys for their correspondin operations. */
     private Map<JButton, String> myKeySelectButtons;
 
+    /** Hint for key selection. */
+    private JLabel myHint;
+
     /**
      * Create a setting scene.
      * 
@@ -58,6 +63,8 @@ public class SettingScene extends JPanel {
         myFrame = theFrame;
         myKeySelectButtons = null;
         myKeySelectButtons = new HashMap<>();
+        myHint = createLabel("", new Font("Helvetica", Font.BOLD , 15), 
+                             BorderFactory.createEmptyBorder(5, 5, 5, 5));
         setup();
     }
 
@@ -68,15 +75,46 @@ public class SettingScene extends JPanel {
         setBackground(mySetting.getBackground());
         setForeground(mySetting.getForeground());
         mySetting.addPropertyChangeListener(new SettingChangeListener(this, mySetting));
+        myHint.setVisible(false);
+        myHint.setForeground(mySetting.getForeground());
         
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         
-        setupCategoryLabels(gbc);
+        setupLabels(gbc);
         setupKeySelectButtons(gbc);
         setupBackgroundButtons(gbc);
         setupSoundSlider(gbc);
-        setupBackButton(gbc);    
+        setupBackButton(gbc);
+
+        addKeyListener(new KeyAdapter() {
+            /**
+             * {@inheritDoc}
+             * Replace the corresponding key of the selcted operation with the key pressed,
+             * if an operation is selected.
+             */
+            @Override
+            public void keyPressed(final KeyEvent e) {
+                if (mySelectedButton != null) {
+                    final int newKey = e.getKeyCode();
+                    final String operation = myKeySelectButtons.get(mySelectedButton);
+                    // A valid key is pressed
+                    if (!mySetting.getAllKeys().contains(newKey) || newKey == mySetting.getKey(operation)) {
+                        mySetting.setKey(operation, newKey);
+                        mySelectedButton.setText(Character.toString((char) newKey));
+                        for (Component c : getComponents()) {
+                            c.setEnabled(true);
+                        }
+                        mySelectedButton = null;
+                        myHint.setVisible(false);
+                    // The key is used for another operation
+                    } else {
+                        myHint.setText("The same key cannot be used twice");
+                        myHint.setVisible(true);
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -84,7 +122,7 @@ public class SettingScene extends JPanel {
      * 
      * @param theGBC The grid bag constraints for the layout of the setting scene.
      */
-    private void setupCategoryLabels(final GridBagConstraints theGBC) {
+    private void setupLabels(final GridBagConstraints theGBC) {
         Font labelFont = new Font("Helvetica", Font.BOLD , 25);
         Border labelBorder = BorderFactory.createEmptyBorder(25, 0, 25, 0);
 
@@ -97,15 +135,18 @@ public class SettingScene extends JPanel {
 
         // Label for background setting
         final JLabel bgLabel = createLabel("BACKGROUND", labelFont, labelBorder);
-        theGBC.gridy = 0;
-        theGBC.gridx = 1;
+        theGBC.gridx++;
         add(bgLabel, theGBC);
 
         // Label for sound setting
         final JLabel soundLabel = createLabel("SOUND", labelFont, labelBorder);
-        theGBC.gridy = 0;
-        theGBC.gridx = 2;
+        theGBC.gridx++;
         add(soundLabel, theGBC);
+
+        theGBC.gridx = 0;
+        theGBC.gridy = 13;
+        theGBC.gridwidth = 3;
+        add(myHint, theGBC);
     }
 
     /**
@@ -115,6 +156,7 @@ public class SettingScene extends JPanel {
      */
     private void setupKeySelectButtons(final GridBagConstraints theGBC) {
         theGBC.anchor = GridBagConstraints.WEST;
+        theGBC.gridwidth = 1;
         theGBC.gridx = 0;
         theGBC.gridy = 0;
         Font labelFont = new Font("Helvetica", Font.BOLD , 15);
@@ -132,12 +174,31 @@ public class SettingScene extends JPanel {
             btn.addActionListener(new ActionListener() {
                 /**
                  * {@inheritDoc}
-                 * Record that this key is waiting to be change.
+                 * Diable all buttons except the selected one and display the hint,
+                 * or enable buttons and cancel the replacement of the key.
                  */
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    mySelectedButton = (CommonButton) e.getSource();
-                    // TODO Implement the feature to replace keys.
+                    // Select a key to replace
+                    if (mySelectedButton == null) {
+                        mySelectedButton = (CommonButton) e.getSource();
+                        for (Component c : getComponents()) {
+                            if (!(c instanceof JLabel)) {
+                                c.setEnabled(false);
+                            }
+                        }
+                        mySelectedButton.setEnabled(true);
+                        myHint.setText("Press a key to replace or press the button again to cancel");
+                        myHint.setVisible(true);
+                        requestFocusInWindow();
+                    // Cancel the replacement
+                    } else {
+                        for (Component c : getComponents()) {
+                            c.setEnabled(true);
+                        }
+                        mySelectedButton = null;
+                        myHint.setVisible(false);
+                    }
                 }
                 
             });
