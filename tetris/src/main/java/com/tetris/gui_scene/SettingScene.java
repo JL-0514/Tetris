@@ -57,7 +57,7 @@ public class SettingScene extends JPanel {
      * @param theFrame The main frame.
      */
     public SettingScene(final Setting theSetting, final TetrisFrame theFrame) {
-        super();
+        super(new GridBagLayout());
         myPrevScene = "Start";
         mySetting = theSetting;
         myFrame = theFrame;
@@ -78,9 +78,7 @@ public class SettingScene extends JPanel {
         myHint.setVisible(false);
         myHint.setForeground(mySetting.getForeground());
         
-        setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        
         setupLabels(gbc);
         setupKeySelectButtons(gbc);
         setupBackgroundButtons(gbc);

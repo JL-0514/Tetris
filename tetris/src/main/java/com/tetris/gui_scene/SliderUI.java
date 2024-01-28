@@ -44,7 +44,7 @@ public class SliderUI extends BasicSliderUI {
             final Graphics2D g2 = (Graphics2D) theGraphics;
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2.setColor(slider.getBackground());
-            g2.fillRect(thumbRect.x, thumbRect.y, thumbRect.width - 2, thumbRect.height - 7);
+            g2.fillRect(thumbRect.x, thumbRect.y, thumbRect.width - 2, thumbRect.height - 8);
         } else {
             super.paintThumb(theGraphics);
         }
@@ -61,10 +61,10 @@ public class SliderUI extends BasicSliderUI {
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             // Paint whole track
             g2.setColor(slider.getForeground());
-            g2.fillRect(slider.getWidth() / 2 - thumbRect.width - 10, 5, thumbRect.width + 7, slider.getHeight());
+            g2.fillRect(trackRect.x - 2, trackRect.y - 10, trackRect.width + 4, trackRect.height + 20);
             // Paint a line that indicate the value as the thumb moves
             g2.setColor(slider.getBackground());
-            g2.fillRect(slider.getWidth() / 2 - thumbRect.width - 5, thumbRect.y + 3, 7, slider.getHeight() - thumbRect.y);
+            g2.fillRect(thumbRect.x + thumbRect.width / 2 - 4, thumbRect.y + 3, 7, slider.getHeight() - thumbRect.y - 6);
         } else {
             super.paintTrack(theGraphics);
         }
