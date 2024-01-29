@@ -40,6 +40,7 @@ public class TetrisFrame extends JFrame {
     /** The scene currently displaying. */
     private String myCurrentScene;
 
+
     /**
      * Initialize the frame and its components.
      */

@@ -23,7 +23,7 @@ public class BlockUnit {
     };
 
     /** The length of each side of the whole unit. */
-    public static final int SIZE = 48;
+    public static final int SIZE = 32;
 
     /** The length of each side of the sub unit in the whole unit. */
     public static final int SUB_SIZE = SIZE / DESIGN[0].length;
