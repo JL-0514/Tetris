@@ -7,13 +7,19 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 import com.tetris.gui_button.CommonButton;
+import com.tetris.model.Block;
 import com.tetris.model.BlockUnit;
+import com.tetris.model.IBlock;
 import com.tetris.model.ScoreCounter;
 import com.tetris.model.Setting;
 
@@ -25,6 +31,12 @@ import com.tetris.model.Setting;
  */
 public class GameScene extends JPanel{
 
+    /** A block acts as a wall around the game space. */
+    private final static BlockUnit WALL = new BlockUnit();
+
+    /** All available blocks in the game. */
+    private final static Block[] ALL_BLOCKS = {new IBlock()};
+
     /** The general setting of the game. */
     private final Setting mySetting;
 
@@ -32,10 +44,10 @@ public class GameScene extends JPanel{
     private final TetrisFrame myFrame;
 
     /** The panel that displays blocks. */
-    private final GameSpacePanel myGameSpace;
+    private final GameSpacePanel myGameSpacePanel;
 
     /** The panel that displays next block. */
-    private final NextBlockPanel myNextBlock;
+    private final NextBlockPanel myNextBlockPanel;
 
     /** The button used to start or pause the game. */
     private final CommonButton myPlayBtn;
@@ -43,14 +55,32 @@ public class GameScene extends JPanel{
     /** The label for score. */
     private final JLabel myScore;
 
+    /** The label for level. */
+    private final JLabel myLevel;
+
     /** The score counter. */
     private final ScoreCounter myScoreCounter;
 
     /** The blocks placed in the game space. */
     private final BlockUnit[][] myBlocks;
 
-    /** Whether teh game has started. */
-    private boolean myStarted;
+    /** Timer used to move the block in a cartain rate. */
+    private final Timer myTimer;
+
+    /** Used to select a random block. */
+    private static Random myRand;
+ 
+    /** The row where the bottom-left corner ofthe block is placed. */
+    private int myRow;
+
+    /** The column where the bottom-left corner of the block is placed. */
+    private int myColumn;
+
+    /** The current block. */
+    private Block myCurrentBlock;
+
+    /** The next block. */
+    private Block myNextBlock;
 
     /**
      * Create a game scene.
@@ -62,13 +92,17 @@ public class GameScene extends JPanel{
         super(new GridBagLayout());
         mySetting = theSetting;
         myFrame = theFrame;
-        myGameSpace = new GameSpacePanel(this, theSetting);
-        myNextBlock = new NextBlockPanel(this, theSetting);
+        myGameSpacePanel = new GameSpacePanel(this, theSetting);
+        myNextBlockPanel = new NextBlockPanel(this, theSetting);
         myPlayBtn = new CommonButton("START", theSetting);
         myScoreCounter = new ScoreCounter();
         myScore = new JLabel("0");
-        myBlocks = new BlockUnit[20][10];
-        myStarted = false;
+        myLevel = new JLabel("0");
+        myBlocks = new BlockUnit[21][13];
+        myTimer = new Timer(myScoreCounter.getSpeed(), new DropBlockAction());
+        myRand = new Random();
+        myRow = 0;
+        myColumn = 5;
         setup();
     }
 
@@ -80,16 +114,26 @@ public class GameScene extends JPanel{
         setForeground(mySetting.getForeground());
         mySetting.addPropertyChangeListener(new SettingChangeListener(this, mySetting));
 
+        // Fill the wall around the game space
+        for (int i = 0; i < 20; i++) {
+            myBlocks[i][0] = WALL;
+            myBlocks[i][1] = WALL;
+            myBlocks[i][12] = WALL;
+        }
+        for (int i = 0; i < 13; i++) {
+            myBlocks[20][i] = WALL;
+        } 
+
         Font labelFont = new Font("Helvetica", Font.BOLD , 20);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 10, 5, 10);
 
         // Panel that display blocks
-        gbc.gridheight = 6;
+        gbc.gridheight = 8;
         gbc.fill = GridBagConstraints.VERTICAL;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        add(myGameSpace, gbc);
+        add(myGameSpacePanel, gbc);
 
         // Label for the next block
         gbc.gridheight = 1;
@@ -104,21 +148,27 @@ public class GameScene extends JPanel{
         // Panel that display next block
         gbc.anchor = GridBagConstraints.WEST;
         gbc.gridy++;
-        add(myNextBlock, gbc);
+        add(myNextBlockPanel, gbc);
 
         // Label that indicate score
         gbc.gridy++;
-        final JLabel scoreLabel = new JLabel("SCORE:");
-        scoreLabel.setFont(labelFont);
-        scoreLabel.setForeground(mySetting.getForeground());
-        scoreLabel.setBorder(BorderFactory.createEmptyBorder(30, 0, 0, 0));
-        add(scoreLabel, gbc);
+        add(createLabel("SCORE:", labelFont), gbc);
 
         // Label for score
         gbc.gridy++;
         myScore.setFont(labelFont);
         myScore.setForeground(mySetting.getForeground());
         add(myScore, gbc);
+
+        // Label that indicate level
+        gbc.gridy++;
+        add(createLabel("LEVEL:", labelFont), gbc);
+
+        // Label for level
+        gbc.gridy++;
+        myLevel.setFont(labelFont);
+        myLevel.setForeground(mySetting.getForeground());
+        add(myLevel, gbc);
 
         // Fill empty space
         gbc.gridy++;
@@ -140,19 +190,56 @@ public class GameScene extends JPanel{
              */
             @Override
             public void actionPerformed(ActionEvent e) {
+                // Pause the game
                 if (myPlayBtn.getText().equals("PAUSE")) {
-                    // TODO Pause the game.
                     myFrame.toScene("Pause");
+                    myTimer.stop();
+                // Start the game
                 } else {
-                    // TODO Start the game.
-                    myStarted = true;
                     myPlayBtn.setText("PAUSE");
                     requestFocusInWindow();
+                    myCurrentBlock = ALL_BLOCKS[myRand.nextInt(ALL_BLOCKS.length)];
+                    myNextBlock = ALL_BLOCKS[myRand.nextInt(ALL_BLOCKS.length)];
+                    myTimer.start();
                 }
             }
             
         });
-        add(myPlayBtn, gbc);;
+        add(myPlayBtn, gbc);
+    }
+
+    /**
+     * Create a label that indicate score or level.
+     * 
+     * @param theText The text of the label.
+     * @param theFont The font of the label.
+     * @return The label with given text and font.
+     */
+    private JLabel createLabel(final String theText, final Font theFont) {
+        final JLabel label = new JLabel(theText);
+        label.setFont(theFont);
+        label.setForeground(mySetting.getForeground());
+        label.setBorder(BorderFactory.createEmptyBorder(30, 0, 0, 0));
+        return label;
+    }
+
+    /**
+     * Resume the game.
+     */
+    public void resume() {
+        requestFocusInWindow();
+        myTimer.start();
+    }
+
+    /**
+     * Action listener for the timer that update the game scene and relative information
+     * as the block drop.
+     */
+    private class DropBlockAction implements ActionListener {
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+            // TODO Update as block drop
+        }
     }
     
 }

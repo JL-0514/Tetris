@@ -19,6 +19,9 @@ public class AbstractBlock implements Block {
     /** The current shape of the block. */
     private int myCurrentShape;
 
+    /** The next random shape. */
+    private int myNextShape;
+
     /**
      * Constructor of abstract block. Only called by its child classes.
      * 
@@ -28,6 +31,7 @@ public class AbstractBlock implements Block {
         super();
         myAllShapes = theShapes;
         myCurrentShape = myRand.nextInt(theShapes.length);
+        myNextShape = myRand.nextInt(theShapes.length);
     }
 
     /**
@@ -40,23 +44,71 @@ public class AbstractBlock implements Block {
     }
 
     /**
-     * Rotate the block clockwise by 90 degrees.
+     * Get the next random shape of the block.
+     * 
+     * @return The next random shape of the block.
      */
-    public void rotateClockwise() {
-        myCurrentShape++;
-        if (myCurrentShape == myAllShapes.length) {
-            myCurrentShape = 0;
+    public int[][] getNextShape() {
+        return myAllShapes[myNextShape].clone();
+    }
+
+    /**
+     * Replace the current shape with the next random shape
+     * and set a new next random shape.
+     */
+    public void setRandomShape() {
+        myCurrentShape = myNextShape;
+        myNextShape = myRand.nextInt(myAllShapes.length);
+    }
+
+    /**
+     * Rotate the block clockwise by 90 degrees.
+     * 
+     * @param theSurrounding The area the block may touch as it rotate.
+     */
+    public void rotateClockwise(BlockUnit[][] theSurrounding) {
+        int target = myCurrentShape + 1;
+        if (target == myAllShapes.length) {
+            target = 0;
+        }
+        if (isValidRotate(theSurrounding, target)) {
+            myCurrentShape = target;
         }
     }
 
     /**
      * Rotate the block counterclockwise by 90 degrees.
+     * 
+     * @param theSurrounding The area the block may touch as it rotate.
      */
-    public void rotateCounterclockwise() {
-        myCurrentShape--;
-        if (myCurrentShape == -1) {
-            myCurrentShape = myAllShapes.length - 1;
+    public void rotateCounterclockwise(BlockUnit[][] theSurrounding) {
+        int target = myCurrentShape - 1;
+        if (target == -1) {
+            target = myAllShapes.length - 1;
         }
+        if (isValidRotate(theSurrounding, target)) {
+            myCurrentShape = target;
+        }
+    }
+
+    /**
+     * Check whether the block can be rotated in the given surrounding.
+     * 
+     * @param theSurrounding The area the block may touch as it rotate.
+     * @param theTarget The index of the shape the block is about to rotate to.
+     * @return Whether the block can be rotated.
+     */
+    public boolean isValidRotate(BlockUnit[][] theSurrounding, int theTarget) {
+        boolean valid = true;
+        for (int i = 0; i < theSurrounding.length; i++) {
+            for (int j = 0; j < theSurrounding[0].length; j++) {
+                if (theSurrounding[i][j] != null && myAllShapes[theTarget][i][j] == 1) {
+                    valid = false;
+                    break;
+                }
+            }
+        }
+        return valid;
     }
     
 }

@@ -27,16 +27,21 @@ public class PauseScene extends JPanel {
     /** The main frame. */
     private final TetrisFrame myFrame;
 
+    /** The game scene. */
+    private final GameScene myGameScene;
+
     /**
      * Create a pause scene.
      * 
      * @param theSetting The general setting of the game.
      * @param theFrame The main frame.
+     * @param theScene The game scene.
      */
-    public PauseScene(final Setting theSetting, final TetrisFrame theFrame) {
+    public PauseScene(final Setting theSetting, final TetrisFrame theFrame, final GameScene theScene) {
         super(new GridBagLayout());
         mySetting = theSetting;
         myFrame = theFrame;
+        myGameScene = theScene;
         setup();
     }
 
@@ -62,6 +67,7 @@ public class PauseScene extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 myFrame.toScene("Game");
+                myGameScene.resume();
             }
             
         });

@@ -35,6 +35,13 @@ public class BlockUnit {
     private Color myDarkColor;
 
     /**
+     * Constructor used to create placeholder used as wall.
+     */
+    public BlockUnit() {
+        super();
+    }
+
+    /**
      * Create a block unit with given colors.
      * 
      * @param theBright The bright color of the unit.

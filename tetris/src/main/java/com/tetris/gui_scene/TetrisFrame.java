@@ -49,7 +49,7 @@ public class TetrisFrame extends JFrame {
         mySetting = new Setting();
         myStartScene = new StartScene(mySetting, this);
         myGameScene = new GameScene(mySetting, this);
-        myPauseScene = new PauseScene(mySetting, this);
+        myPauseScene = new PauseScene(mySetting, this, myGameScene);
         mySettingScene = new SettingScene(mySetting, this);
         myLayout = new CardLayout();
         myContainer = new JPanel();
