@@ -6,11 +6,11 @@ import java.awt.GridBagLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
-import com.tetris.model.BlockUnit;
+import com.tetris.model.PieceUnit;
 import com.tetris.model.Setting;
 
 /**
- * The panel that display blocks.
+ * The panel that display pieces.
  * 
  * @author Jiameng Li
  * @version 1.0
@@ -24,7 +24,7 @@ public class GameSpacePanel extends JPanel {
     private final Setting mySetting;
 
     /**
-     * Create a panel that display blocks.
+     * Create a panel that display pieces.
      * 
      * @param thePanel The game scene.
      * @param theSetting The general setting of the game.
@@ -40,7 +40,7 @@ public class GameSpacePanel extends JPanel {
      * Set up the panel.
      */
     private void setup() {
-        setPreferredSize(new Dimension(1 + 10 * (BlockUnit.SIZE + 1), 1 + 20 * (BlockUnit.SIZE + 1)));
+        setPreferredSize(new Dimension(1 + 10 * (PieceUnit.SIZE + 1), 1 + 20 * (PieceUnit.SIZE + 1)));
         setMinimumSize(getPreferredSize());
         setMaximumSize(getPreferredSize());
         setBorder(BorderFactory.createLineBorder(mySetting.getForeground(), 15));

@@ -3,31 +3,31 @@ package com.tetris.model;
 import java.util.Random;
 
 /**
- * Abstract game block.
+ * Abstract game piece.
  * 
  * @author Jiameng Li
  * @version 1.0
  */
-public class AbstractBlock implements Block {
+public class AbstractPiece implements Piece {
 
-    /** Used to select random shape from the block. */
+    /** Used to select random shape from the piece. */
     private static Random myRand = new Random();
 
-    /** All possible shape for the block. */
+    /** All possible shape for the piece. */
     private int[][][] myAllShapes;
 
-    /** The current shape of the block. */
+    /** The current shape of the piece. */
     private int myCurrentShape;
 
     /** The next random shape. */
     private int myNextShape;
 
     /**
-     * Constructor of abstract block. Only called by its child classes.
+     * Constructor of abstract piece. Only called by its child classes.
      * 
-     * @param theShapes All possible shapes of the block.
+     * @param theShapes All possible shapes of the piece.
      */
-    protected AbstractBlock(final int[][][] theShapes) {
+    protected AbstractPiece(final int[][][] theShapes) {
         super();
         myAllShapes = theShapes;
         myCurrentShape = myRand.nextInt(theShapes.length);
@@ -35,18 +35,18 @@ public class AbstractBlock implements Block {
     }
 
     /**
-     * Get the current shape of the block.
+     * Get the current shape of the piece.
      * 
-     * @return The current shape of the block.
+     * @return The current shape of the piece.
      */
     public int[][] getCurrentShape() {
         return myAllShapes[myCurrentShape].clone();
     }
 
     /**
-     * Get the next random shape of the block.
+     * Get the next random shape of the piece.
      * 
-     * @return The next random shape of the block.
+     * @return The next random shape of the piece.
      */
     public int[][] getNextShape() {
         return myAllShapes[myNextShape].clone();
@@ -62,11 +62,11 @@ public class AbstractBlock implements Block {
     }
 
     /**
-     * Rotate the block clockwise by 90 degrees.
+     * Rotate the piece clockwise by 90 degrees.
      * 
-     * @param theSurrounding The area the block may touch as it rotate.
+     * @param theSurrounding The area the piece may touch as it rotate.
      */
-    public void rotateClockwise(BlockUnit[][] theSurrounding) {
+    public void rotateClockwise(PieceUnit[][] theSurrounding) {
         int target = myCurrentShape + 1;
         if (target == myAllShapes.length) {
             target = 0;
@@ -77,11 +77,11 @@ public class AbstractBlock implements Block {
     }
 
     /**
-     * Rotate the block counterclockwise by 90 degrees.
+     * Rotate the piece counterclockwise by 90 degrees.
      * 
-     * @param theSurrounding The area the block may touch as it rotate.
+     * @param theSurrounding The area the piece may touch as it rotate.
      */
-    public void rotateCounterclockwise(BlockUnit[][] theSurrounding) {
+    public void rotateCounterclockwise(PieceUnit[][] theSurrounding) {
         int target = myCurrentShape - 1;
         if (target == -1) {
             target = myAllShapes.length - 1;
@@ -92,13 +92,13 @@ public class AbstractBlock implements Block {
     }
 
     /**
-     * Check whether the block can be rotated in the given surrounding.
+     * Check whether the piece can be rotated in the given surrounding.
      * 
-     * @param theSurrounding The area the block may touch as it rotate.
-     * @param theTarget The index of the shape the block is about to rotate to.
-     * @return Whether the block can be rotated.
+     * @param theSurrounding The area the piece may touch as it rotate.
+     * @param theTarget The index of the shape the piece is about to rotate to.
+     * @return Whether the piece can be rotated.
      */
-    public boolean isValidRotate(BlockUnit[][] theSurrounding, int theTarget) {
+    public boolean isValidRotate(PieceUnit[][] theSurrounding, int theTarget) {
         boolean valid = true;
         for (int i = 0; i < theSurrounding.length; i++) {
             for (int j = 0; j < theSurrounding[0].length; j++) {

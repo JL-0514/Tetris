@@ -17,11 +17,17 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import com.tetris.gui_button.CommonButton;
-import com.tetris.model.Block;
-import com.tetris.model.BlockUnit;
-import com.tetris.model.IBlock;
+import com.tetris.model.Piece;
+import com.tetris.model.PieceUnit;
+import com.tetris.model.SPiece;
+import com.tetris.model.IPiece;
+import com.tetris.model.JPiece;
+import com.tetris.model.LPiece;
+import com.tetris.model.OPiece;
 import com.tetris.model.ScoreCounter;
 import com.tetris.model.Setting;
+import com.tetris.model.TPiece;
+import com.tetris.model.ZPiece;
 
 /**
  * The game scene where the game is being played.
@@ -32,10 +38,11 @@ import com.tetris.model.Setting;
 public class GameScene extends JPanel{
 
     /** A block acts as a wall around the game space. */
-    private final static BlockUnit WALL = new BlockUnit();
+    private final static PieceUnit WALL = new PieceUnit();
 
     /** All available blocks in the game. */
-    private final static Block[] ALL_BLOCKS = {new IBlock()};
+    private final static Piece[] ALL_BLOCKS = {new IPiece(), new JPiece(), new LPiece(), new OPiece(), 
+                                               new SPiece(), new TPiece(), new ZPiece()};
 
     /** The general setting of the game. */
     private final Setting mySetting;
@@ -43,10 +50,10 @@ public class GameScene extends JPanel{
     /** The main frame. */
     private final TetrisFrame myFrame;
 
-    /** The panel that displays blocks. */
+    /** The panel that displays piecea. */
     private final GameSpacePanel myGameSpacePanel;
 
-    /** The panel that displays next block. */
+    /** The panel that displays next piece. */
     private final NextBlockPanel myNextBlockPanel;
 
     /** The button used to start or pause the game. */
@@ -61,26 +68,26 @@ public class GameScene extends JPanel{
     /** The score counter. */
     private final ScoreCounter myScoreCounter;
 
-    /** The blocks placed in the game space. */
-    private final BlockUnit[][] myBlocks;
+    /** The pieces placed in the game space. */
+    private final PieceUnit[][] myPieces;
 
-    /** Timer used to move the block in a cartain rate. */
+    /** Timer used to move the piece in a cartain rate. */
     private final Timer myTimer;
 
-    /** Used to select a random block. */
+    /** Used to select a random piece. */
     private static Random myRand;
  
-    /** The row where the bottom-left corner ofthe block is placed. */
+    /** The row where the bottom-left corner ofthe piece is placed. */
     private int myRow;
 
-    /** The column where the bottom-left corner of the block is placed. */
+    /** The column where the bottom-left corner of the piece is placed. */
     private int myColumn;
 
-    /** The current block. */
-    private Block myCurrentBlock;
+    /** The current piece. */
+    private Piece myCurrentPiece;
 
-    /** The next block. */
-    private Block myNextBlock;
+    /** The next piece. */
+    private Piece myNextPiece;
 
     /**
      * Create a game scene.
@@ -98,7 +105,7 @@ public class GameScene extends JPanel{
         myScoreCounter = new ScoreCounter();
         myScore = new JLabel("0");
         myLevel = new JLabel("0");
-        myBlocks = new BlockUnit[21][13];
+        myPieces = new PieceUnit[21][13];
         myTimer = new Timer(myScoreCounter.getSpeed(), new DropBlockAction());
         myRand = new Random();
         myRow = 0;
@@ -116,26 +123,26 @@ public class GameScene extends JPanel{
 
         // Fill the wall around the game space
         for (int i = 0; i < 20; i++) {
-            myBlocks[i][0] = WALL;
-            myBlocks[i][1] = WALL;
-            myBlocks[i][12] = WALL;
+            myPieces[i][0] = WALL;
+            myPieces[i][1] = WALL;
+            myPieces[i][12] = WALL;
         }
         for (int i = 0; i < 13; i++) {
-            myBlocks[20][i] = WALL;
+            myPieces[20][i] = WALL;
         } 
 
         Font labelFont = new Font("Helvetica", Font.BOLD , 20);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 10, 5, 10);
 
-        // Panel that display blocks
+        // Panel that display pieces
         gbc.gridheight = 8;
         gbc.fill = GridBagConstraints.VERTICAL;
         gbc.gridx = 0;
         gbc.gridy = 0;
         add(myGameSpacePanel, gbc);
 
-        // Label for the next block
+        // Label for the next piece
         gbc.gridheight = 1;
         gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.SOUTHWEST;
@@ -145,7 +152,7 @@ public class GameScene extends JPanel{
         nextLabel.setForeground(mySetting.getForeground());
         add(nextLabel, gbc);
 
-        // Panel that display next block
+        // Panel that display next piece
         gbc.anchor = GridBagConstraints.WEST;
         gbc.gridy++;
         add(myNextBlockPanel, gbc);
@@ -198,8 +205,8 @@ public class GameScene extends JPanel{
                 } else {
                     myPlayBtn.setText("PAUSE");
                     requestFocusInWindow();
-                    myCurrentBlock = ALL_BLOCKS[myRand.nextInt(ALL_BLOCKS.length)];
-                    myNextBlock = ALL_BLOCKS[myRand.nextInt(ALL_BLOCKS.length)];
+                    myCurrentPiece = ALL_BLOCKS[myRand.nextInt(ALL_BLOCKS.length)];
+                    myNextPiece = ALL_BLOCKS[myRand.nextInt(ALL_BLOCKS.length)];
                     myTimer.start();
                 }
             }

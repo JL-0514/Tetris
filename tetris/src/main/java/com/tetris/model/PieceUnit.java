@@ -3,14 +3,14 @@ package com.tetris.model;
 import java.awt.Color;
 
 /**
- * Represent a unit of a block.
+ * Represent a unit of a piece.
  * 
  * @author Jiameng Li
  * @version 1.0
  */
-public class BlockUnit {
+public class PieceUnit {
 
-    /** Design of the block unit. */
+    /** Design of the piece unit. */
     public static final int[][] DESIGN = {
         {0, 0, 0, 0, 0, 0, 0, 0},
         {0, 1, 1, 1, 1, 1, 1, 0},
@@ -37,7 +37,7 @@ public class BlockUnit {
     /**
      * Constructor used to create placeholder used as wall.
      */
-    public BlockUnit() {
+    public PieceUnit() {
         super();
     }
 
@@ -47,7 +47,7 @@ public class BlockUnit {
      * @param theBright The bright color of the unit.
      * @param theDark The dark color of the unit.
      */
-    public BlockUnit(final Color theBright, final Color theDark) {
+    public PieceUnit(final Color theBright, final Color theDark) {
         super();
         myBrightColor = theBright;
         myDarkColor = theDark;
