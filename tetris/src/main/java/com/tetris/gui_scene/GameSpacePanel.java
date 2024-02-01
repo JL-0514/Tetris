@@ -69,7 +69,7 @@ public class GameSpacePanel extends JPanel {
             int x = 10;
             for (int c = 2; c < 12; c++) {
                 if (units[r][c] != null) {
-                    units[r][c].paintUnit(graphics, x, y);
+                    units[r][c].paintUnit(graphics, x, y, PieceUnit.SUB_SIZE);
                 }
                 x += PieceUnit.SIZE;
             }
@@ -83,7 +83,7 @@ public class GameSpacePanel extends JPanel {
             int x = 10 + (myGameScene.getCurrentColumn() + shape[0].length - 3) * PieceUnit.SIZE;
             for (int c = shape[0].length - 1; c > -1 && x > 0; c--) {
                 if (shape[r][c] == 1) {
-                    current.getUnit().paintUnit(graphics, x, y);
+                    current.getUnit().paintUnit(graphics, x, y, PieceUnit.SUB_SIZE);
                 }
                 x -= PieceUnit.SIZE;
             }

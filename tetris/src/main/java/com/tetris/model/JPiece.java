@@ -4,7 +4,7 @@ import java.awt.Color;
 
 /**
  * The J-Piece.
- * Overall color: yellow orange.
+ * Overall color: blue green.
  * 
  * @author Jiameng Li
  * @version 1.0
@@ -39,7 +39,7 @@ public class JPiece extends AbstractPiece {
      * Create a J-Piece.
      */
     public JPiece() {
-        super(ALL_SHAPES, new Color(255, 213, 158), new Color(255, 154, 20));
+        super(ALL_SHAPES, new Color(93, 214, 244), new Color(13, 152, 186));
     }
     
 }

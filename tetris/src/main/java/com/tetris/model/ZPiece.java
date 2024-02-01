@@ -4,7 +4,7 @@ import java.awt.Color;
 
 /**
  * The Z-Piece.
- * Overall color: blue green.
+ * Overall color: yellow organge.
  * 
  * @author Jiameng Li
  * @version 1.0
@@ -29,7 +29,7 @@ public class ZPiece extends AbstractPiece {
      * Create a Z-Piece.
      */
     public ZPiece() {
-        super(ALL_SHAPES, new Color(93, 214, 244), new Color(13, 152, 186));
+        super(ALL_SHAPES, new Color(255, 213, 158), new Color(255, 154, 20));
     }
     
 }

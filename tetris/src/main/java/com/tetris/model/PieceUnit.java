@@ -97,18 +97,19 @@ public class PieceUnit {
      * @param theGraphics The graphics used to paint the unit.
      * @param theX The x-coordinate.
      * @param theY The y-coordinate.
+     * @param theSubSize Sub size of each small unit in the whole unit.
      */
-    public void paintUnit(final Graphics2D theGraphics, final int theX, final int theY) {
+    public void paintUnit(final Graphics2D theGraphics, final int theX, final int theY, final int theSubSize) {
         int y = theY;
         for (int i = 0; i < DESIGN.length; i++) {
             int x = theX;
             for (int j = 0; j < DESIGN[0].length; j++) {
                 Color color = DESIGN[i][j] == 0 ? myOuterColor : myInnerColor;
                 theGraphics.setColor(color);
-                theGraphics.fillRect(x, y, SUB_SIZE, SUB_SIZE);
-                x += SUB_SIZE;
+                theGraphics.fillRect(x, y, theSubSize, theSubSize);
+                x += theSubSize;
             }
-            y += SUB_SIZE;
+            y += theSubSize;
         }
     }
     

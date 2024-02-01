@@ -70,14 +70,14 @@ public class GameScene extends JPanel{
     /** The label for level. */
     private final JLabel myLevel;
 
-    /** The score counter. */
-    private final ScoreCounter myScoreCounter;
-
     /** Timer used to move the piece in a cartain rate. */
-    private final Timer myTimer;
+    private Timer myTimer;
 
     /** The pieces placed in the game space. */
     private final PieceUnit[][] myPieces;
+
+    /** The score counter. */
+    private ScoreCounter myScoreCounter;
  
     /** The row where the bottom-left corner ofthe piece is placed. */
     private int myRow;
@@ -106,11 +106,10 @@ public class GameScene extends JPanel{
         myGameSpacePanel = new GameSpacePanel(this, theSetting);
         myNextBlockPanel = new NextBlockPanel(this, theSetting);
         myPlayBtn = new CommonButton("START", theSetting);
-        myScoreCounter = new ScoreCounter();
         myScore = new JLabel("0");
         myLevel = new JLabel("0");
         myPieces = new PieceUnit[21][13];
-        myTimer = new Timer(myScoreCounter.getSpeed(), new DropBlockAction());
+        myTimer = new Timer(ScoreCounter.INIT_SPEED, new DropBlockAction());
         myRand = new Random();
         myRow = 0;
         myColumn = 5;
@@ -125,6 +124,7 @@ public class GameScene extends JPanel{
         setForeground(mySetting.getForeground());
         mySetting.addPropertyChangeListener(new SettingChangeListener(this, mySetting));
         mySetting.addPropertyChangeListener(new PieceChangeListener());
+        addKeyListener(new GameSceneKeyAdapter());
 
         // Fill the wall around the game space
         for (int i = 0; i < 20; i++) {
@@ -193,7 +193,7 @@ public class GameScene extends JPanel{
         gbc.gridy++;
         gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.SOUTHWEST;
-        myPlayBtn.setPreferredSize(new Dimension(120, 50));
+        myPlayBtn.setPreferredSize(new Dimension(144, 50));
         myPlayBtn.setFont(labelFont);
         myPlayBtn.addActionListener(new ActionListener() {
             /**
@@ -210,11 +210,13 @@ public class GameScene extends JPanel{
                 } else {
                     myPlayBtn.setText("PAUSE");
                     requestFocusInWindow();
+                    myScoreCounter = new ScoreCounter();
                     myCurrentPiece = myAllPieces[myRand.nextInt(myAllPieces.length)];
                     myNextPiece = myAllPieces[myRand.nextInt(myAllPieces.length)];
                     myScore.setText("0");
                     myLevel.setText("0");
                     myTimer.restart();
+                    myNextBlockPanel.repaint();
                 }
             }
             
@@ -355,7 +357,7 @@ public class GameScene extends JPanel{
                     }
                 }
                 // Get next piece
-                myCurrentPiece = myAllPieces[myRand.nextInt(myAllPieces.length)];
+                myCurrentPiece = myNextPiece;
                 myNextPiece = myAllPieces[myRand.nextInt(myAllPieces.length)];
                 myCurrentPiece.setRandomShape();
                 myRow = 0;
@@ -383,6 +385,13 @@ public class GameScene extends JPanel{
                     p.backgroundChanged((Color) e.getNewValue());
                 }
             }
+        }
+    }
+
+    private class GameSceneKeyAdapter extends KeyAdapter {
+        @Override
+        public void keyPressed(final KeyEvent e) {
+
         }
     }
     

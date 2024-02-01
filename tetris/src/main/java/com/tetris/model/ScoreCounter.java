@@ -2,6 +2,9 @@ package com.tetris.model;
 
 public class ScoreCounter {
 
+    /** The initial speed of the game. */
+    public static final int INIT_SPEED = 790;
+
     /** The total score. */
     private int myScore;
 
@@ -22,7 +25,7 @@ public class ScoreCounter {
         myScore = 0;
         myLevel = 0;
         myLine = 0;
-        mySpeed = 790;
+        mySpeed = INIT_SPEED;
     }
 
     /**
