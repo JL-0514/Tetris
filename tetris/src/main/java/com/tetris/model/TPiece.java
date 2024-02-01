@@ -35,14 +35,11 @@ public class TPiece extends AbstractPiece {
         }
     };
 
-    /** The bright color used by the piece. */
-    public static final Color BRIGHT_COLOR = new Color(255, 194, 112);
-
-    /** The darck color used by the piece. */
-    public static final Color DARK_COLOR = new Color(229, 131, 0);
-
+    /**
+     * Create a T-Piece.
+     */
     public TPiece() {
-        super(ALL_SHAPES);
+        super(ALL_SHAPES, new Color(255, 194, 112), new Color(229, 131, 0));
     }
     
 }

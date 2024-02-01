@@ -1,5 +1,7 @@
 package com.tetris.model;
 
+import java.awt.Color;
+
 /**
  * Interface that represents all types of pieces in tetris.
  * 
@@ -21,6 +23,13 @@ public interface Piece {
      * @return The next random shape of the piece.
      */
     public int[][] getNextShape();
+
+    /**
+     * Get the piece unit that made up the piece.
+     * 
+     * @return The piece unit.
+     */
+    public PieceUnit getUnit();
 
     /**
      * Replace the current shape with the next random shape
@@ -50,5 +59,12 @@ public interface Piece {
      * @return Whether the piece can be rotated.
      */
     public boolean isValidRotate(PieceUnit[][] theSurrounding, int theTarget);
+
+     /**
+     * Change the color of the unit when the background color changed.
+     * 
+     * @param theBackground The new background color.
+     */
+    public void backgroundChanged(Color theBackground);
     
 }

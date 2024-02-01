@@ -1,5 +1,6 @@
 package com.tetris.gui_scene;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -9,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Random;
 
 import javax.swing.BorderFactory;
@@ -40,9 +43,11 @@ public class GameScene extends JPanel{
     /** A block acts as a wall around the game space. */
     private final static PieceUnit WALL = new PieceUnit();
 
+    /** Used to select a random piece. */
+    private static Random myRand;
+
     /** All available blocks in the game. */
-    private final static Piece[] ALL_BLOCKS = {new IPiece(), new JPiece(), new LPiece(), new OPiece(), 
-                                               new SPiece(), new TPiece(), new ZPiece()};
+    private final Piece[] myAllPieces;
 
     /** The general setting of the game. */
     private final Setting mySetting;
@@ -68,14 +73,11 @@ public class GameScene extends JPanel{
     /** The score counter. */
     private final ScoreCounter myScoreCounter;
 
-    /** The pieces placed in the game space. */
-    private final PieceUnit[][] myPieces;
-
     /** Timer used to move the piece in a cartain rate. */
     private final Timer myTimer;
 
-    /** Used to select a random piece. */
-    private static Random myRand;
+    /** The pieces placed in the game space. */
+    private final PieceUnit[][] myPieces;
  
     /** The row where the bottom-left corner ofthe piece is placed. */
     private int myRow;
@@ -97,6 +99,8 @@ public class GameScene extends JPanel{
      */
     public GameScene(final Setting theSetting, final TetrisFrame theFrame) {
         super(new GridBagLayout());
+        myAllPieces = new Piece[]{new IPiece(), new JPiece(), new LPiece(), new OPiece(), 
+                                  new SPiece(), new TPiece(), new ZPiece()};
         mySetting = theSetting;
         myFrame = theFrame;
         myGameSpacePanel = new GameSpacePanel(this, theSetting);
@@ -120,6 +124,7 @@ public class GameScene extends JPanel{
         setBackground(mySetting.getBackground());
         setForeground(mySetting.getForeground());
         mySetting.addPropertyChangeListener(new SettingChangeListener(this, mySetting));
+        mySetting.addPropertyChangeListener(new PieceChangeListener());
 
         // Fill the wall around the game space
         for (int i = 0; i < 20; i++) {
@@ -205,9 +210,11 @@ public class GameScene extends JPanel{
                 } else {
                     myPlayBtn.setText("PAUSE");
                     requestFocusInWindow();
-                    myCurrentPiece = ALL_BLOCKS[myRand.nextInt(ALL_BLOCKS.length)];
-                    myNextPiece = ALL_BLOCKS[myRand.nextInt(ALL_BLOCKS.length)];
-                    myTimer.start();
+                    myCurrentPiece = myAllPieces[myRand.nextInt(myAllPieces.length)];
+                    myNextPiece = myAllPieces[myRand.nextInt(myAllPieces.length)];
+                    myScore.setText("0");
+                    myLevel.setText("0");
+                    myTimer.restart();
                 }
             }
             
@@ -233,19 +240,149 @@ public class GameScene extends JPanel{
     /**
      * Resume the game.
      */
-    public void resume() {
+    protected void resume() {
         requestFocusInWindow();
         myTimer.start();
     }
 
     /**
+     * End the game.
+     */
+    private void gameOver() {
+        myTimer.stop();
+        myPlayBtn.setText("START");
+        myCurrentPiece = null;
+        myNextPiece = null;
+        for (int i = 0; i < 20; i++) {
+            for (int j = 2; j < 12; j++) {
+                myPieces[i][j] = null;
+            }
+        }
+    }
+
+    /**
+     * Get the row of the bottom left corner of the current piece.
+     * 
+     * @return The row of the bottom left corner of the current piece.
+     */
+    protected int getCurrentRow() {
+        return myRow;
+    }
+
+    /**
+     * Get the column of the bottom left corner of the current piece.
+     * 
+     * @return The column of the bottom left corner of the current piece.
+     */
+    protected int getCurrentColumn() {
+        return myColumn;
+    }
+
+    /**
+     * Get the current piece.
+     * 
+     * @return The current piece.
+     */
+    protected Piece getCurrentPiece() {
+        return myCurrentPiece;
+    }
+
+    /**
+     * Get the next piece.
+     * 
+     * @return The next piece.
+     */
+    protected Piece getNextPiece() {
+        return myNextPiece;
+    }
+
+    /**
+     * Get pieces currently placed in the game space.
+     * 
+     * @return Pieces currently placed in the game space.
+     */
+    protected PieceUnit[][] getPieces() {
+        return myPieces;
+    }
+
+    /**
+     * Check whether the current piece can drop to next row.
+     * 
+     * @return Whether the current piece can drop to next row.
+     */
+    private boolean canDrop() {
+        boolean drop = true;
+        final int[][] shape = myCurrentPiece.getCurrentShape();
+        outerLoop:
+        for (int c = 0; c < shape[0].length; c++) {
+            for (int r = shape.length - 1; r > -1; r--) {
+                if (shape[r][c] == 1) {
+                    final int nextR = myRow - shape.length + r + 2;
+                    if (nextR > 19 || (nextR > -1 &&myPieces[nextR][myColumn + c] != null)) {
+                        drop = false;
+                        break outerLoop;
+                    }
+                    break;
+                }
+            }
+        }
+        return drop;
+    }
+
+    /**
      * Action listener for the timer that update the game scene and relative information
-     * as the block drop.
+     * as the piece drop.
      */
     private class DropBlockAction implements ActionListener {
+        /**
+         * {@inheritDoc}
+         * Move to next row or get next piece, and repaint the panel.
+         */
         @Override
         public void actionPerformed(final ActionEvent e) {
-            // TODO Update as block drop
+            final int[][] shape = myCurrentPiece.getCurrentShape();
+            if(!canDrop()) {
+                // Place the piece in current position
+                for (int r = myRow, i = shape.length - 1; i > -1; r--, i--) {
+                    for (int c = myColumn, j = 0; j < shape[0].length; c++, j++) {
+                        if (shape[i][j] == 1) {
+                            if (r < 0) {    // Reach the top, end the game
+                                gameOver();
+                                return;
+                            }
+                            myPieces[r][c] = myCurrentPiece.getUnit();
+                        }
+                    }
+                }
+                // Get next piece
+                myCurrentPiece = myAllPieces[myRand.nextInt(myAllPieces.length)];
+                myNextPiece = myAllPieces[myRand.nextInt(myAllPieces.length)];
+                myCurrentPiece.setRandomShape();
+                myRow = 0;
+                myColumn = 5;
+                myNextBlockPanel.repaint();
+            } else {
+                myRow++;
+            }
+            myGameSpacePanel.repaint();
+        }
+    }
+
+    /**
+     * Property change listener that listen to the change in background.
+     */
+    private class PieceChangeListener implements PropertyChangeListener {
+        /**
+         * {@inheritDoc}
+         * Change the color of each piece when background color changes.
+         */
+        @Override
+        public void propertyChange(final PropertyChangeEvent e) {
+            if (e.getPropertyName().equals("color") && e.getNewValue() != e.getOldValue()) {
+                for (Piece p : myAllPieces) {
+                    p.backgroundChanged((Color) e.getNewValue());
+                }
+            }
         }
     }
     

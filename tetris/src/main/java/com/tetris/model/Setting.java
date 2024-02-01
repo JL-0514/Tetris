@@ -114,7 +114,7 @@ public class Setting {
     /**
      * Get the names of all available background colors.
      * 
-     * @return
+     * @return The names of all available background colors.
      */
     public Set<String> getAvailableColors() {
         return myColors.keySet();

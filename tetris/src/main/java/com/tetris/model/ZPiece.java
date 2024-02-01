@@ -25,14 +25,11 @@ public class ZPiece extends AbstractPiece {
         }
     };
 
-    /** The bright color used by the piece. */
-    public static final Color BRIGHT_COLOR = new Color(93, 214, 244);
-
-    /** The darck color used by the piece. */
-    public static final Color DARK_COLOR = new Color(13, 152, 186);
-
+    /**
+     * Create a Z-Piece.
+     */
     public ZPiece() {
-        super(ALL_SHAPES);
+        super(ALL_SHAPES, new Color(93, 214, 244), new Color(13, 152, 186));
     }
     
 }

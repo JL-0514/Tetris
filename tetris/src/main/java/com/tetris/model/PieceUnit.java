@@ -1,9 +1,11 @@
 package com.tetris.model;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 
 /**
  * Represent a unit of a piece.
+ * Every piece is made up by four units of the same color.
  * 
  * @author Jiameng Li
  * @version 1.0
@@ -28,11 +30,11 @@ public class PieceUnit {
     /** The length of each side of the sub unit in the whole unit. */
     public static final int SUB_SIZE = SIZE / DESIGN[0].length;
 
-    /** The bright color used in the unit. */
-    private Color myBrightColor;
+    /** The color used in the outer side of the unit. */
+    private Color myOuterColor;
 
-    /** The dark color used in the unit. */
-    private Color myDarkColor;
+    /** The color used in the inner side of the unit. */
+    private Color myInnerColor;
 
     /**
      * Constructor used to create placeholder used as wall.
@@ -44,31 +46,70 @@ public class PieceUnit {
     /**
      * Create a block unit with given colors.
      * 
-     * @param theBright The bright color of the unit.
-     * @param theDark The dark color of the unit.
+     * @param theOuter The outer color of the unit.
+     * @param theInner The inner color of the unit.
      */
-    public PieceUnit(final Color theBright, final Color theDark) {
+    public PieceUnit(final Color theOuter, final Color theInner) {
         super();
-        myBrightColor = theBright;
-        myDarkColor = theDark;
+        myOuterColor = theOuter;
+        myInnerColor = theInner;
     }
 
     /**
-     * Get the bright color used in the unit.
+     * Get the outer color used in the unit.
      * 
-     * @return The bright color used in the unit.
+     * @return The outer color used in the unit.
      */
-    public Color getBrightColor() {
-        return myBrightColor;
+    public Color getOuterColor() {
+        return myOuterColor;
     }
 
     /**
-     * Get the dark color used in the unit.
+     * Get the inner color used in the unit.
      * 
-     * @return The dark color used in the unit.
+     * @return The inner color used in the unit.
      */
-    public Color getDarkColor() {
-        return myDarkColor;
+    public Color getInnerColor() {
+        return myInnerColor;
+    }
+
+    /**
+     * Change the outer color of the unit.
+     * 
+     * @param theOuter The new outer color.
+     */
+    public void setOuterColor(final Color theOuter) {
+        myOuterColor = theOuter;
+    }
+
+    /**
+     * Change the innner color of the unit.
+     * 
+     * @param theInner The new inner color.
+     */
+    public void setInnerColor(final Color theInner) {
+        myInnerColor = theInner;
+    }
+
+    /**
+     * Paint the unit using the given graphics on the given coordinate.
+     * 
+     * @param theGraphics The graphics used to paint the unit.
+     * @param theX The x-coordinate.
+     * @param theY The y-coordinate.
+     */
+    public void paintUnit(final Graphics2D theGraphics, final int theX, final int theY) {
+        int y = theY;
+        for (int i = 0; i < DESIGN.length; i++) {
+            int x = theX;
+            for (int j = 0; j < DESIGN[0].length; j++) {
+                Color color = DESIGN[i][j] == 0 ? myOuterColor : myInnerColor;
+                theGraphics.setColor(color);
+                theGraphics.fillRect(x, y, SUB_SIZE, SUB_SIZE);
+                x += SUB_SIZE;
+            }
+            y += SUB_SIZE;
+        }
     }
     
 }

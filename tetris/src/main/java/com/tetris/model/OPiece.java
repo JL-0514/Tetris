@@ -21,14 +21,11 @@ public class OPiece extends AbstractPiece {
         }
     };
 
-    /** The bright color used by the piece. */
-    public static final Color BRIGHT_COLOR = new Color(122, 232, 70);
-
-    /** The darck color used by the piece. */
-    public static final Color DARK_COLOR = new Color(43, 105, 13);
-
+    /**
+     * Create a O-Piece.
+     */
     public OPiece() {
-        super(ALL_SHAPES);
+        super(ALL_SHAPES, new Color(122, 232, 70), new Color(43, 105, 13));
     }   
 
 }

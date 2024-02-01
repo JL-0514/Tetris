@@ -2,6 +2,8 @@ package com.tetris.model;
 
 import java.util.Random;
 
+import java.awt.Color;
+
 /**
  * Abstract game piece.
  * 
@@ -22,16 +24,30 @@ public class AbstractPiece implements Piece {
     /** The next random shape. */
     private int myNextShape;
 
+    /** The brighter color of the piece. */
+    private Color myBrightColor;
+
+    /** The darker color of the piece. */
+    private Color myDarkColor;
+
+    /** The instance of unit used to make piece. */
+    private PieceUnit myUnit;
+
     /**
-     * Constructor of abstract piece. Only called by its child classes.
+     * Constructor of abstract piece with given shapes and colors.
      * 
      * @param theShapes All possible shapes of the piece.
+     * @param theBright The brighter color.
+     * @param theDark The darker color.
      */
-    protected AbstractPiece(final int[][][] theShapes) {
+    protected AbstractPiece(final int[][][] theShapes, final Color theBright, final Color theDark) {
         super();
         myAllShapes = theShapes;
         myCurrentShape = myRand.nextInt(theShapes.length);
         myNextShape = myRand.nextInt(theShapes.length);
+        myBrightColor = theBright;
+        myDarkColor = theDark;
+        myUnit = new PieceUnit(theBright, theDark);
     }
 
     /**
@@ -50,6 +66,15 @@ public class AbstractPiece implements Piece {
      */
     public int[][] getNextShape() {
         return myAllShapes[myNextShape].clone();
+    }
+
+    /**
+     * Get the piece unit that made up the piece.
+     * 
+     * @return The piece unit.
+     */
+    public PieceUnit getUnit() {
+        return myUnit;
     }
 
     /**
@@ -100,15 +125,31 @@ public class AbstractPiece implements Piece {
      */
     public boolean isValidRotate(PieceUnit[][] theSurrounding, int theTarget) {
         boolean valid = true;
+        outerLoop:
         for (int i = 0; i < theSurrounding.length; i++) {
             for (int j = 0; j < theSurrounding[0].length; j++) {
                 if (theSurrounding[i][j] != null && myAllShapes[theTarget][i][j] == 1) {
                     valid = false;
-                    break;
+                    break outerLoop;
                 }
             }
         }
         return valid;
+    }
+
+    /**
+     * Change the color of the unit when the background color changed.
+     * 
+     * @param theBackground The new background color.
+     */
+    public void backgroundChanged(final Color theBackground) {
+        if (theBackground == Color.BLACK) {
+            myUnit.setInnerColor(myDarkColor);
+            myUnit.setOuterColor(myBrightColor);
+        } else if (theBackground == Color.WHITE) {
+            myUnit.setInnerColor(myBrightColor);
+            myUnit.setOuterColor(myDarkColor);
+        }
     }
     
 }

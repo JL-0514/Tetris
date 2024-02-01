@@ -25,14 +25,11 @@ public class SPiece extends AbstractPiece {
         }
     };
 
-    /** The bright color used by the piece. */
-    public static final Color BRIGHT_COLOR = new Color(50, 203, 241);
-
-    /** The darck color used by the piece. */
-    public static final Color DARK_COLOR = new Color(10, 117, 143);
-
+    /**
+     * Create a S-Piece.
+     */
     public SPiece() {
-        super(ALL_SHAPES);
+        super(ALL_SHAPES, new Color(50, 203, 241), new Color(10, 117, 143));
     }
     
 }

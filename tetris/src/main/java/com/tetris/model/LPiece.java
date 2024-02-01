@@ -35,14 +35,11 @@ public class LPiece extends AbstractPiece {
         }
     };
 
-    /** The bright color used by the piece. */
-    public static final Color BRIGHT_COLOR = new Color(255, 233, 204);
-
-    /** The darck color used by the piece. */
-    public static final Color DARK_COLOR = new Color(255, 174, 66);
-
+    /**
+     * Create a L-Piece.
+     */
     public LPiece() {
-        super(ALL_SHAPES);
+        super(ALL_SHAPES, new Color(255, 233, 204), new Color(255, 174, 66));
     }
     
 }

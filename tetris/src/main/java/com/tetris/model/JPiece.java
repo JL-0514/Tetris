@@ -35,14 +35,11 @@ public class JPiece extends AbstractPiece {
         }
     };
 
-    /** The bright color used by the piece. */
-    public static final Color BRIGHT_COLOR = new Color(255, 213, 158);
-
-    /** The darck color used by the piece. */
-    public static final Color DARK_COLOR = new Color(255, 154, 20);
-
+    /**
+     * Create a J-Piece.
+     */
     public JPiece() {
-        super(ALL_SHAPES);
+        super(ALL_SHAPES, new Color(255, 213, 158), new Color(255, 154, 20));
     }
     
 }

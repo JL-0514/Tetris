@@ -85,34 +85,7 @@ public class SettingScene extends JPanel {
         setupSoundSlider(gbc);
         setupBackButton(gbc);
 
-        addKeyListener(new KeyAdapter() {
-            /**
-             * {@inheritDoc}
-             * Replace the corresponding key of the selcted operation with the key pressed,
-             * if an operation is selected.
-             */
-            @Override
-            public void keyPressed(final KeyEvent e) {
-                if (mySelectedButton != null) {
-                    final int newKey = e.getKeyCode();
-                    final String operation = myKeySelectButtons.get(mySelectedButton);
-                    // A valid key is pressed
-                    if (!mySetting.getAllKeys().contains(newKey) || newKey == mySetting.getKey(operation)) {
-                        mySetting.setKey(operation, newKey);
-                        mySelectedButton.setText(Character.toString((char) newKey));
-                        for (Component c : getComponents()) {
-                            c.setEnabled(true);
-                        }
-                        mySelectedButton = null;
-                        myHint.setVisible(false);
-                    // The key is used for another operation
-                    } else {
-                        myHint.setText("The same key cannot be used twice");
-                        myHint.setVisible(true);
-                    }
-                }
-            }
-        });
+        addKeyListener(new SettingKeyAdapter());
     }
 
     /**
@@ -317,6 +290,38 @@ public class SettingScene extends JPanel {
      */
     public void setPrevScene(final String theScene) {
         myPrevScene = theScene;
+    }
+
+    /**
+     * Key adapter for the setting scene.
+     */
+    private class SettingKeyAdapter extends KeyAdapter {
+        /**
+         * {@inheritDoc}
+         * Replace the corresponding key of the selcted operation with the key pressed,
+         * if an operation is selected.
+         */
+        @Override
+        public void keyPressed(final KeyEvent e) {
+            if (mySelectedButton != null) {
+                final int newKey = e.getKeyCode();
+                final String operation = myKeySelectButtons.get(mySelectedButton);
+                // A valid key is pressed
+                if (!mySetting.getAllKeys().contains(newKey) || newKey == mySetting.getKey(operation)) {
+                    mySetting.setKey(operation, newKey);
+                    mySelectedButton.setText(Character.toString((char) newKey));
+                    for (Component c : getComponents()) {
+                        c.setEnabled(true);
+                    }
+                    mySelectedButton = null;
+                    myHint.setVisible(false);
+                // The key is used for another operation
+                } else {
+                    myHint.setText("The same key cannot be used twice");
+                    myHint.setVisible(true);
+                }
+            }
+        }
     }
     
 }

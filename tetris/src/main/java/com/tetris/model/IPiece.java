@@ -27,14 +27,11 @@ public class IPiece extends AbstractPiece {
         }
     };
 
-    /** The bright color used by the piece. */
-    public static final Color BRIGHT_COLOR = new Color(16, 187, 229);
-
-    /** The darck color used by the piece. */
-    public static final Color DARK_COLOR = new Color(7, 82, 100);
-
+    /**
+     * Create a I-Piece.
+     */
     public IPiece() {
-        super(ALL_SHAPES);
+        super(ALL_SHAPES, new Color(16, 187, 229), new Color(7, 82, 100));
     }
     
 }
