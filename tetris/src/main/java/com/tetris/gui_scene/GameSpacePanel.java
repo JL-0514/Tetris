@@ -1,5 +1,6 @@
 package com.tetris.gui_scene;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -62,11 +63,35 @@ public class GameSpacePanel extends JPanel {
         graphics.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_DEFAULT);
         final PieceUnit[][] units = myGameScene.getPieces();
         final Piece current = myGameScene.getCurrentPiece();
+        final int[][] shape = current.getCurrentShape();
+
+        // Draw a line to assist the user
+        int hasUnit = -1;
+        int size = 0;
+        for (int c = 0; c < shape[0].length; c++) {
+            for (int r = 0; r < shape.length; r++) {
+                if (shape[r][c] == 1) {
+                    if (hasUnit == -1) {
+                        hasUnit = c;
+                    }
+                    size++;
+                    break;
+                }
+            }
+        }
+        int y = 10;
+        int x = 10 + (myGameScene.getCurrentColumn() - 2 + hasUnit) * PieceUnit.SIZE;
+        if (mySetting.getBackground() == Color.BLACK) {
+            graphics.setColor(Color.DARK_GRAY);
+        } else {
+            graphics.setColor(Color.LIGHT_GRAY);
+        }
+        graphics.fillRect(x, y, PieceUnit.SIZE * size, getPreferredSize().height);
         
         // Paint placed pieces
-        int y = 10 + 19 * PieceUnit.SIZE;
+        y = 10 + 19 * PieceUnit.SIZE;
         for (int r = 19; r > -1; r--) {
-            int x = 10;
+            x = 10;
             for (int c = 2; c < 12; c++) {
                 if (units[r][c] != null) {
                     units[r][c].paintUnit(graphics, x, y, PieceUnit.SUB_SIZE);
@@ -78,9 +103,8 @@ public class GameSpacePanel extends JPanel {
 
         // Paint current piece
         y = 10 + myGameScene.getCurrentRow() * PieceUnit.SIZE;
-        final int[][] shape = current.getCurrentShape();
         for (int r = shape.length - 1; r > -1 && y > 0; r--) {
-            int x = 10 + (myGameScene.getCurrentColumn() + shape[0].length - 3) * PieceUnit.SIZE;
+            x = 10 + (myGameScene.getCurrentColumn() + shape[0].length - 3) * PieceUnit.SIZE;
             for (int c = shape[0].length - 1; c > -1 && x > 0; c--) {
                 if (shape[r][c] == 1) {
                     current.getUnit().paintUnit(graphics, x, y, PieceUnit.SUB_SIZE);

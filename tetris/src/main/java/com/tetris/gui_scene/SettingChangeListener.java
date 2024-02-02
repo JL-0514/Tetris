@@ -49,12 +49,10 @@ public class SettingChangeListener implements PropertyChangeListener{
             for (Component c : myPanel.getComponents()) {
                 c.setForeground(mySetting.getForeground());
                 c.setBackground(mySetting.getBackground());
-                if (c instanceof JComponent) {
-                    final Border b = ((JComponent) c).getBorder();
-                    if (b != null && b instanceof LineBorder) {
-                        ((JComponent) c).setBorder(BorderFactory.createLineBorder(mySetting.getForeground(), 
-                                                   ((LineBorder) b).getThickness()));
-                    }
+                final Border b = ((JComponent) c).getBorder();
+                if (b != null && b instanceof LineBorder) {
+                    ((JComponent) c).setBorder(BorderFactory.createLineBorder(mySetting.getForeground(), 
+                                                ((LineBorder) b).getThickness()));
                 }
             }
         }

@@ -41,7 +41,7 @@ public class CommonButton extends JButton {
     }
 
     /**
-     * Set up the button by adjusting its look.
+     * Basic setup for the button.
      */
     private void setup() {
         setFont(TEXT_FONT);

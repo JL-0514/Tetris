@@ -1,5 +1,12 @@
 package com.tetris.model;
 
+/**
+ * The score counter used to keep track of the total score, current level,
+ * number of line cleared, and current speed.
+ * 
+ * @author Jiameng Li
+ * @version 1.0
+ */
 public class ScoreCounter {
 
     /** The initial speed of the game. */

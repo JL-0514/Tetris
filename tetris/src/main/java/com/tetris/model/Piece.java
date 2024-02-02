@@ -36,6 +36,13 @@ public interface Piece {
      * and set a new next random shape.
      */
     public void setRandomShape();
+
+    /**
+     * Get get size of the piece (the number of units at each side).
+     * 
+     * @return Size of the piece.
+     */
+    public int getSize();
     
     /**
      * Rotate the piece clockwise by 90 degrees.

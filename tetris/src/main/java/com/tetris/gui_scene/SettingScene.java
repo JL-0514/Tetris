@@ -26,6 +26,7 @@ import com.tetris.model.Setting;
 
 /**
  * The scene used to change setting of the game.
+ * Containing the settign for keys, background color, and sound.
  * 
  * @author Jiameng Li
  * @version 1.0
@@ -114,6 +115,7 @@ public class SettingScene extends JPanel {
         theGBC.gridx++;
         add(soundLabel, theGBC);
 
+        // Label for hint to the user
         theGBC.gridx = 0;
         theGBC.gridy = 13;
         theGBC.gridwidth = 3;

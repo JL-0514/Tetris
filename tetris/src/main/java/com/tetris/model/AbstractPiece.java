@@ -78,6 +78,15 @@ public class AbstractPiece implements Piece {
     }
 
     /**
+     * Get get size of the piece (the number of units at each side).
+     * 
+     * @return Size of the piece.
+     */
+    public int getSize() {
+        return myAllShapes[0].length;
+    }
+
+    /**
      * Replace the current shape with the next random shape
      * and set a new next random shape.
      */

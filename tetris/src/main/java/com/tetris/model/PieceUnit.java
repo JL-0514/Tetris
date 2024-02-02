@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 
 /**
  * Represent a unit of a piece.
- * Every piece is made up by four units of the same color.
+ * Every piece is made up by four piece units of the same color.
  * 
  * @author Jiameng Li
  * @version 1.0
@@ -92,7 +92,7 @@ public class PieceUnit {
     }
 
     /**
-     * Paint the unit using the given graphics on the given coordinate.
+     * Paint the unit using the given graphics on the given coordinate with the given size.
      * 
      * @param theGraphics The graphics used to paint the unit.
      * @param theX The x-coordinate.

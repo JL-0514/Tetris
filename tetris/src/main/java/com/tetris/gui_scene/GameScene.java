@@ -117,7 +117,8 @@ public class GameScene extends JPanel{
     }
 
     /**
-     * Set up the game scene.
+     * Set up the game scene by placing components on the right position
+     * and add listeners for components.
      */
     private void setup() {
         setBackground(mySetting.getBackground());
@@ -215,8 +216,9 @@ public class GameScene extends JPanel{
                     myNextPiece = myAllPieces[myRand.nextInt(myAllPieces.length)];
                     myScore.setText("0");
                     myLevel.setText("0");
-                    myTimer.restart();
+                    myGameSpacePanel.repaint();
                     myNextBlockPanel.repaint();
+                    myTimer.restart();
                 }
             }
             
@@ -240,7 +242,7 @@ public class GameScene extends JPanel{
     }
 
     /**
-     * Resume the game.
+     * Resume the game from the pause scene.
      */
     protected void resume() {
         requestFocusInWindow();
@@ -308,6 +310,81 @@ public class GameScene extends JPanel{
     }
 
     /**
+     * Perform a hard drop on the current piece.
+     */
+    private void hardDrop() {
+        while (canDrop()) {
+            myRow++;
+        }
+    }
+
+    /**
+     * Check whether the current piece can shift one unit to the left.
+     * 
+     * @return Whether the current piece can shift one unit to the left.
+     */
+    private boolean canShiftLeft() {
+        boolean shift = true;
+        final int[][] shape = myCurrentPiece.getCurrentShape();
+        outerLoop:
+        for (int c = 0; c < shape[0].length; c++) {
+            for (int r = shape.length - 1; r > -1; r--) {
+                if (shape[r][c] == 1) {
+                    final int row = myRow - shape.length + r + 1;
+                    final int leftC = myColumn + c - 1;
+                    if (leftC < 2 || (row > -1 && myPieces[row][leftC] != null)) {
+                        shift = false;
+                        break outerLoop;
+                    }
+                    break;
+                }
+            }
+        }
+        return shift;
+    }
+
+    /**
+     * Check whether the current piece can shift one unit to the right.
+     * 
+     * @return Whether the current piece can shift one unit to the right.
+     */
+    private boolean canShiftRight() {
+        boolean shift = true;
+        final int[][] shape = myCurrentPiece.getCurrentShape();
+        outerLoop:
+        for (int c = shape[0].length - 1; c > -1; c--) {
+            for (int r = shape.length - 1; r > -1; r--) {
+                if (shape[r][c] == 1) {
+                    final int row = myRow - shape.length + r + 1;
+                    final int rightC = myColumn + c + 1;
+                    if (rightC > 11 || (row > -1 && myPieces[row][rightC] != null)) {
+                        shift = false;
+                        break outerLoop;
+                    }
+                    break;
+                }
+            }
+        }
+        return shift;
+    }
+
+    /**
+     * Get the surrounding of the current piece, that is, the piece units the current piece
+     * may touch as it rotate.
+     * 
+     * @return The surrounding of the current piece.
+     */
+    private PieceUnit[][] getSurrounding() {
+        PieceUnit[][] surrounding = new PieceUnit[myCurrentPiece.getSize()][myCurrentPiece.getSize()];
+        for (int r = surrounding.length - 1, i = 0; r > -1 && myRow - i > -1; r--, i++) {
+            for (int c = 0; c < surrounding[0].length; c++) {
+                surrounding[r][c] = myPieces[myRow - i][myColumn + c];
+            }
+        }
+        return surrounding;
+    }
+
+    /**
      * Check whether the current piece can drop to next row.
      * 
      * @return Whether the current piece can drop to next row.
@@ -320,7 +397,7 @@ public class GameScene extends JPanel{
             for (int r = shape.length - 1; r > -1; r--) {
                 if (shape[r][c] == 1) {
                     final int nextR = myRow - shape.length + r + 2;
-                    if (nextR > 19 || (nextR > -1 &&myPieces[nextR][myColumn + c] != null)) {
+                    if (nextR > 19 || (nextR > -1 && myPieces[nextR][myColumn + c] != null)) {
                         drop = false;
                         break outerLoop;
                     }
@@ -329,6 +406,34 @@ public class GameScene extends JPanel{
             }
         }
         return drop;
+    }
+
+    /**
+     * Check whether there's any filled rows. If so, clear them.
+     * This must be done before getting next piece.
+     */
+    private void clearLine() {
+        // TODO Add score to score counter if there's line cleared.
+        int cleared = 0;
+        for (int r = 19; r > -1; r--) {
+            boolean fill = true;
+            while (fill) {
+                // Find a filled row
+                for (int c = 2; c < 12; c++) {
+                    if (myPieces[r][c] == null) {
+                        fill = false;
+                        break;
+                    }
+                }
+                // Clear the filled row
+                if (fill) { cleared++; }
+                if (cleared > 0 && r - cleared > -1) {
+                    for (int c = 2; c < 12; c++) {
+                        myPieces[r][c] = myPieces[r - cleared][c];
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -356,6 +461,7 @@ public class GameScene extends JPanel{
                         }
                     }
                 }
+                clearLine();
                 // Get next piece
                 myCurrentPiece = myNextPiece;
                 myNextPiece = myAllPieces[myRand.nextInt(myAllPieces.length)];
@@ -388,11 +494,58 @@ public class GameScene extends JPanel{
         }
     }
 
+    /**
+     * Key sdapter used to move and rotate the current piece.
+     */
     private class GameSceneKeyAdapter extends KeyAdapter {
+
+        /**
+         * {@inheritDoc}
+         * Perform one of the following operations on the current piece based on the key pressed: 
+         * 1. Shift left
+         * 2. Shift right
+         * 3. Rotate clockwise
+         * 4. Rotate counterclockwise
+         * 5. Soft drop
+         */
         @Override
         public void keyPressed(final KeyEvent e) {
-
+            if (!myTimer.isRunning() || myCurrentPiece == null) { return; }
+            final int keycode = e.getKeyCode();
+            if (keycode == mySetting.getKey("Shift Left") && canShiftLeft()) {
+                myColumn--;
+            } else if (keycode == mySetting.getKey("Shift Right") && canShiftRight()) {
+                myColumn++;
+            } else if (keycode == mySetting.getKey("Rotate Clockwise")) {
+                myCurrentPiece.rotateClockwise(getSurrounding());
+            } else if (keycode == mySetting.getKey("Rotate Counterclockwise")) {
+                myCurrentPiece.rotateCounterclockwise(getSurrounding());
+            } else if (keycode == mySetting.getKey("Soft Drop")) {
+                myTimer.setDelay(myScoreCounter.getSpeed() / 2);
+            }
+            if (keycode != mySetting.getKey("Soft Drop")) {
+                myGameSpacePanel.repaint();
+            }
         }
+
+        /**
+         * {@inheritDoc}
+         * Perform one of the following operations on the current piece based on the key released: 
+         * 1. Resume to regular speed if released from soft drop.
+         * 2. Perform a hard drop.
+         */
+        @Override
+        public void keyReleased(final KeyEvent e) {
+            if (!myTimer.isRunning() || myCurrentPiece == null) { return; }
+            final int keycode = e.getKeyCode();
+            if (keycode == mySetting.getKey("Soft Drop")) {
+                myTimer.setDelay(myScoreCounter.getSpeed());
+            } else if (keycode == mySetting.getKey("Hard Drop")) {
+                hardDrop();
+                repaint();
+            }
+        }
+
     }
     
 }
