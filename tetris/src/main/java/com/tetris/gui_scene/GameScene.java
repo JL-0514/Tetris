@@ -128,6 +128,7 @@ public class GameScene extends JPanel{
         mySetting.addPropertyChangeListener(new PieceChangeListener());
         addKeyListener(new GameSceneKeyAdapter());
         myScoreCounter.addPropertyChangeListener(new ScoreChangeListener());
+        myTimer.setInitialDelay(0);
 
         // Fill the wall around the game space
         for (int i = 0; i < 20; i++) {
@@ -230,7 +231,6 @@ public class GameScene extends JPanel{
      */
     private void gameOver() {
         myTimer.stop();
-        myPlayBtn.setText("START");
         myScoreCounter.reset();
         myCurrentPiece = null;
         myNextPiece = null;
@@ -239,6 +239,7 @@ public class GameScene extends JPanel{
                 myPieces[i][j] = null;
             }
         }
+        myPlayBtn.setText("START");
     }
 
     /**
@@ -396,6 +397,7 @@ public class GameScene extends JPanel{
                     myLevel.setText("0");
                     myGameSpacePanel.repaint();
                     myNextBlockPanel.repaint();
+                    myTimer.setDelay(myScoreCounter.getSpeed());
                     myTimer.restart();
                 }
             }

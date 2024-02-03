@@ -1,5 +1,6 @@
 package com.tetris.gui_scene;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -31,7 +32,7 @@ public class SliderUI extends BasicSliderUI {
      */
     @Override
     protected Dimension getThumbSize() {
-        return new Dimension(15, 15);
+        return new Dimension(16, 8);
     }
 
     /**
@@ -43,8 +44,8 @@ public class SliderUI extends BasicSliderUI {
         if (slider.getOrientation() == JSlider.VERTICAL) {
             final Graphics2D g2 = (Graphics2D) theGraphics;
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2.setColor(slider.getBackground());
-            g2.fillRect(thumbRect.x, thumbRect.y, thumbRect.width - 2, thumbRect.height - 8);
+            g2.setColor(Color.BLUE);
+            g2.fillRect(thumbRect.x, thumbRect.y, 16, 8);
         } else {
             super.paintThumb(theGraphics);
         }
@@ -61,10 +62,10 @@ public class SliderUI extends BasicSliderUI {
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             // Paint whole track
             g2.setColor(slider.getForeground());
-            g2.fillRect(trackRect.x - 2, trackRect.y - 10, trackRect.width + 4, trackRect.height + 20);
+            g2.fillRect(trackRect.x - 4, trackRect.y - thumbRect.height, trackRect.width + 8, trackRect.height + thumbRect.height * 2);
             // Paint a line that indicate the value as the thumb moves
             g2.setColor(slider.getBackground());
-            g2.fillRect(thumbRect.x + thumbRect.width / 2 - 4, thumbRect.y + 3, 7, slider.getHeight() - thumbRect.y - 6);
+            g2.fillRect(thumbRect.x, thumbRect.y, thumbRect.width, slider.getHeight() - thumbRect.y - 4);
         } else {
             super.paintTrack(theGraphics);
         }

@@ -213,19 +213,32 @@ public class SettingScene extends JPanel {
      * @param theGBC The grid bag constraints for the layout of the setting scene.
      */
     private void setupSoundSlider(final GridBagConstraints theGBC) {
-        theGBC.gridheight = 10;
+        // Labels for value of the slider
+        final Font font = new Font("Helvetica", Font.BOLD , 15);
+        theGBC.gridheight = 1;
+        theGBC.anchor = GridBagConstraints.SOUTH;
         theGBC.gridx = 2;
+        theGBC.gridy = 1;
+        JLabel label = new JLabel("100");
+        label.setFont(font);
+        label.setForeground(mySetting.getForeground());
+        add(label, theGBC);
+        theGBC.anchor = GridBagConstraints.NORTH;
+        theGBC.gridy = 12;
+        label = new JLabel("0");
+        label.setFont(font);
+        label.setForeground(mySetting.getForeground());
+        add(label, theGBC);
+        // Slider
+        theGBC.gridheight = 10;
         theGBC.gridy = 2;
         theGBC.fill = GridBagConstraints.VERTICAL;
         final JSlider slider = new JSlider(JSlider.VERTICAL, 0, 100, mySetting.getVolume());
+        slider.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
         slider.setBackground(mySetting.getBackground());
         slider.setForeground(mySetting.getForeground());
-        slider.setFont( new Font("Helvetica", Font.BOLD , 15));
-        slider.setBorder(BorderFactory.createEmptyBorder(5, 15, 0, 15));
         slider.setMajorTickSpacing(10);
         slider.setMinorTickSpacing(1);
-        slider.setPaintTicks(true);
-        slider.setPaintLabels(true);
         slider.setSnapToTicks(true);
         slider.setFocusable(false);
         slider.setUI(new SliderUI(slider));
