@@ -164,7 +164,6 @@ public class Setting {
     }
 
 
-
     /**
      * Add property change listener to the property change support.
      * 

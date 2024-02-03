@@ -71,13 +71,13 @@ public class GameScene extends JPanel{
     private final JLabel myLevel;
 
     /** Timer used to move the piece in a cartain rate. */
-    private Timer myTimer;
+    private final Timer myTimer;
 
     /** The pieces placed in the game space. */
     private final PieceUnit[][] myPieces;
 
     /** The score counter. */
-    private ScoreCounter myScoreCounter;
+    private final ScoreCounter myScoreCounter;
  
     /** The row where the bottom-left corner ofthe piece is placed. */
     private int myRow;
@@ -110,6 +110,7 @@ public class GameScene extends JPanel{
         myLevel = new JLabel("0");
         myPieces = new PieceUnit[21][13];
         myTimer = new Timer(ScoreCounter.INIT_SPEED, new DropBlockAction());
+        myScoreCounter = new ScoreCounter();
         myRand = new Random();
         myRow = 0;
         myColumn = 5;
@@ -126,6 +127,7 @@ public class GameScene extends JPanel{
         mySetting.addPropertyChangeListener(new SettingChangeListener(this, mySetting));
         mySetting.addPropertyChangeListener(new PieceChangeListener());
         addKeyListener(new GameSceneKeyAdapter());
+        myScoreCounter.addPropertyChangeListener(new ScoreChangeListener());
 
         // Fill the wall around the game space
         for (int i = 0; i < 20; i++) {
@@ -196,33 +198,7 @@ public class GameScene extends JPanel{
         gbc.anchor = GridBagConstraints.SOUTHWEST;
         myPlayBtn.setPreferredSize(new Dimension(144, 50));
         myPlayBtn.setFont(labelFont);
-        myPlayBtn.addActionListener(new ActionListener() {
-            /**
-             * {@inheritDoc}
-             * Start or pause the game.
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Pause the game
-                if (myPlayBtn.getText().equals("PAUSE")) {
-                    myFrame.toScene("Pause");
-                    myTimer.stop();
-                // Start the game
-                } else {
-                    myPlayBtn.setText("PAUSE");
-                    requestFocusInWindow();
-                    myScoreCounter = new ScoreCounter();
-                    myCurrentPiece = myAllPieces[myRand.nextInt(myAllPieces.length)];
-                    myNextPiece = myAllPieces[myRand.nextInt(myAllPieces.length)];
-                    myScore.setText("0");
-                    myLevel.setText("0");
-                    myGameSpacePanel.repaint();
-                    myNextBlockPanel.repaint();
-                    myTimer.restart();
-                }
-            }
-            
-        });
+        myPlayBtn.addActionListener(new PlayBtnActionListner());
         add(myPlayBtn, gbc);
     }
 
@@ -255,6 +231,7 @@ public class GameScene extends JPanel{
     private void gameOver() {
         myTimer.stop();
         myPlayBtn.setText("START");
+        myScoreCounter.reset();
         myCurrentPiece = null;
         myNextPiece = null;
         for (int i = 0; i < 20; i++) {
@@ -313,59 +290,33 @@ public class GameScene extends JPanel{
      * Perform a hard drop on the current piece.
      */
     private void hardDrop() {
-        while (canDrop()) {
+        while (canMove(myRow + 1, myColumn)) {
             myRow++;
         }
     }
 
     /**
-     * Check whether the current piece can shift one unit to the left.
+     * Check whether the current piece can move to given row and column.
+     * The row and column indicate the destination position of the bottom left corner of the piece.
      * 
-     * @return Whether the current piece can shift one unit to the left.
+     * @param theRow The row of the the destination position of the bottom left corner of the piece.
+     * @param theCol The column of the the destination position of the bottom left corner of the piece.
+     * @return Whether the current piece can move to given row and column.
      */
-    private boolean canShiftLeft() {
-        boolean shift = true;
+    private boolean canMove(final int theRow, final int theCol) {
+        boolean move = true;
         final int[][] shape = myCurrentPiece.getCurrentShape();
         outerLoop:
-        for (int c = 0; c < shape[0].length; c++) {
-            for (int r = shape.length - 1; r > -1; r--) {
-                if (shape[r][c] == 1) {
-                    final int row = myRow - shape.length + r + 1;
-                    final int leftC = myColumn + c - 1;
-                    if (leftC < 2 || (row > -1 && myPieces[row][leftC] != null)) {
-                        shift = false;
-                        break outerLoop;
-                    }
-                    break;
+        for (int r = shape.length - 1, i = 0; r > -1; r--, i++) {
+            for (int c = 0; c < shape[0].length; c++) {
+                if (shape[r][c] == 1 && (theRow - i > 19 || theCol + c < 2 || theCol + c > 11 ||
+                    (theRow - i > -1 && myPieces[theRow - i][theCol + c] != null))) {
+                    move = false;
+                    break outerLoop;
                 }
             }
         }
-        return shift;
-    }
-
-    /**
-     * Check whether the current piece can shift one unit to the right.
-     * 
-     * @return Whether the current piece can shift one unit to the right.
-     */
-    private boolean canShiftRight() {
-        boolean shift = true;
-        final int[][] shape = myCurrentPiece.getCurrentShape();
-        outerLoop:
-        for (int c = shape[0].length - 1; c > -1; c--) {
-            for (int r = shape.length - 1; r > -1; r--) {
-                if (shape[r][c] == 1) {
-                    final int row = myRow - shape.length + r + 1;
-                    final int rightC = myColumn + c + 1;
-                    if (rightC > 11 || (row > -1 && myPieces[row][rightC] != null)) {
-                        shift = false;
-                        break outerLoop;
-                    }
-                    break;
-                }
-            }
-        }
-        return shift;
+        return move;
     }
 
     /**
@@ -385,39 +336,21 @@ public class GameScene extends JPanel{
     }
 
     /**
-     * Check whether the current piece can drop to next row.
-     * 
-     * @return Whether the current piece can drop to next row.
-     */
-    private boolean canDrop() {
-        boolean drop = true;
-        final int[][] shape = myCurrentPiece.getCurrentShape();
-        outerLoop:
-        for (int c = 0; c < shape[0].length; c++) {
-            for (int r = shape.length - 1; r > -1; r--) {
-                if (shape[r][c] == 1) {
-                    final int nextR = myRow - shape.length + r + 2;
-                    if (nextR > 19 || (nextR > -1 && myPieces[nextR][myColumn + c] != null)) {
-                        drop = false;
-                        break outerLoop;
-                    }
-                    break;
-                }
-            }
-        }
-        return drop;
-    }
-
-    /**
      * Check whether there's any filled rows. If so, clear them.
      * This must be done before getting next piece.
      */
     private void clearLine() {
-        // TODO Add score to score counter if there's line cleared.
         int cleared = 0;
         for (int r = 19; r > -1; r--) {
             boolean fill = true;
+            int lines = 0;
             while (fill) {
+                // Clear the filled row
+                if (cleared > 0 && r - cleared > -1) {
+                    for (int c = 2; c < 12; c++) {
+                        myPieces[r][c] = myPieces[r - cleared][c];
+                    }
+                }
                 // Find a filled row
                 for (int c = 2; c < 12; c++) {
                     if (myPieces[r][c] == null) {
@@ -425,15 +358,47 @@ public class GameScene extends JPanel{
                         break;
                     }
                 }
-                // Clear the filled row
-                if (fill) { cleared++; }
-                if (cleared > 0 && r - cleared > -1) {
-                    for (int c = 2; c < 12; c++) {
-                        myPieces[r][c] = myPieces[r - cleared][c];
-                    }
+                // Count the filled row
+                if (fill) {
+                    cleared++;
+                    lines++;
                 }
             }
+            if (lines > 0) {
+                myScoreCounter.addLine(lines); 
+            }
         }
+        
+    }
+
+
+    /**
+     * Action listener for the button used to start or pause the game.
+     */
+    private class PlayBtnActionListner implements ActionListener {
+        /**
+             * {@inheritDoc}
+             * Start or pause the game.
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Pause the game
+                if (myPlayBtn.getText().equals("PAUSE")) {
+                    myFrame.toScene("Pause");
+                    myTimer.stop();
+                // Start the game
+                } else {
+                    myPlayBtn.setText("PAUSE");
+                    requestFocusInWindow();
+                    myCurrentPiece = myAllPieces[myRand.nextInt(myAllPieces.length)];
+                    myNextPiece = myAllPieces[myRand.nextInt(myAllPieces.length)];
+                    myScore.setText("0");
+                    myLevel.setText("0");
+                    myGameSpacePanel.repaint();
+                    myNextBlockPanel.repaint();
+                    myTimer.restart();
+                }
+            }
     }
 
     /**
@@ -448,7 +413,7 @@ public class GameScene extends JPanel{
         @Override
         public void actionPerformed(final ActionEvent e) {
             final int[][] shape = myCurrentPiece.getCurrentShape();
-            if(!canDrop()) {
+            if(!canMove(myRow + 1, myColumn)) {
                 // Place the piece in current position
                 for (int r = myRow, i = shape.length - 1; i > -1; r--, i--) {
                     for (int c = myColumn, j = 0; j < shape[0].length; c++, j++) {
@@ -486,10 +451,28 @@ public class GameScene extends JPanel{
          */
         @Override
         public void propertyChange(final PropertyChangeEvent e) {
-            if (e.getPropertyName().equals("color") && e.getNewValue() != e.getOldValue()) {
+            if (e.getPropertyName().equals("color")) {
                 for (Piece p : myAllPieces) {
                     p.backgroundChanged((Color) e.getNewValue());
                 }
+            }
+        }
+    }
+
+    /**
+     * Listener for changes in score and level.
+     */
+    private class ScoreChangeListener implements PropertyChangeListener {
+        /**
+         * {@inheritDoc}
+         * Change the label for score and level, and adjust speed.
+         */
+        public void propertyChange(final PropertyChangeEvent e) {
+            if (e.getPropertyName().equals("score")) {
+                myScore.setText(Integer.toString(myScoreCounter.getScore()));
+            } else if (e.getPropertyName().equals("level")) {
+                myLevel.setText(Integer.toString(myScoreCounter.getLevel()));
+                myTimer.setDelay(myScoreCounter.getSpeed());
             }
         }
     }
@@ -512,16 +495,16 @@ public class GameScene extends JPanel{
         public void keyPressed(final KeyEvent e) {
             if (!myTimer.isRunning() || myCurrentPiece == null) { return; }
             final int keycode = e.getKeyCode();
-            if (keycode == mySetting.getKey("Shift Left") && canShiftLeft()) {
+            if (keycode == mySetting.getKey("Shift Left") && canMove(myRow, myColumn - 1)) {
                 myColumn--;
-            } else if (keycode == mySetting.getKey("Shift Right") && canShiftRight()) {
+            } else if (keycode == mySetting.getKey("Shift Right") && canMove(myRow, myColumn + 1)) {
                 myColumn++;
             } else if (keycode == mySetting.getKey("Rotate Clockwise")) {
                 myCurrentPiece.rotateClockwise(getSurrounding());
             } else if (keycode == mySetting.getKey("Rotate Counterclockwise")) {
                 myCurrentPiece.rotateCounterclockwise(getSurrounding());
             } else if (keycode == mySetting.getKey("Soft Drop")) {
-                myTimer.setDelay(myScoreCounter.getSpeed() / 2);
+                myTimer.setDelay(myScoreCounter.getSpeed() / 3);
             }
             if (keycode != mySetting.getKey("Soft Drop")) {
                 myGameSpacePanel.repaint();

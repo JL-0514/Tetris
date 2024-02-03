@@ -43,7 +43,7 @@ public class SettingChangeListener implements PropertyChangeListener{
      * Change the background and foreground color of the panel and all its components.
      */
     public void propertyChange(final PropertyChangeEvent e) {
-        if (e.getPropertyName().equals("color") && e.getOldValue() != e.getNewValue()) {
+        if (e.getPropertyName().equals("color")) {
             myPanel.setBackground(mySetting.getBackground());
             myPanel.setForeground(mySetting.getForeground());
             for (Component c : myPanel.getComponents()) {
