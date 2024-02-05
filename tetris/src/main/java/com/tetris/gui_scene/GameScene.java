@@ -91,6 +91,12 @@ public class GameScene extends JPanel{
     /** The next piece. */
     private Piece myNextPiece;
 
+    /** Whether the current piece is soft dropping. */
+    private boolean mySoftDropping;
+
+    /** The number of rows dropped while soft dropping. */
+    private int mySoftDropped;
+
     /**
      * Create a game scene.
      * 
@@ -114,6 +120,8 @@ public class GameScene extends JPanel{
         myRand = new Random();
         myRow = 0;
         myColumn = 5;
+        mySoftDropping = false;
+        mySoftDropped = 0;
         setup();
     }
 
@@ -291,14 +299,18 @@ public class GameScene extends JPanel{
      * Perform a hard drop on the current piece.
      */
     private void hardDrop() {
+        int moves = 0;
         while (canMove(myRow + 1, myColumn)) {
             myRow++;
+            moves++;
         }
+        myScoreCounter.addScore(moves * 2);
     }
 
     /**
      * Check whether the current piece can move to given row and column.
      * The row and column indicate the destination position of the bottom left corner of the piece.
+     * Search from the bottom left corner to top right until there's overlapping piece units.
      * 
      * @param theRow The row of the the destination position of the bottom left corner of the piece.
      * @param theCol The column of the the destination position of the bottom left corner of the piece.
@@ -438,6 +450,7 @@ public class GameScene extends JPanel{
                 myNextBlockPanel.repaint();
             } else {
                 myRow++;
+                if (mySoftDropping) { mySoftDropped++; }
             }
             myGameSpacePanel.repaint();
         }
@@ -506,6 +519,7 @@ public class GameScene extends JPanel{
             } else if (keycode == mySetting.getKey("Rotate Counterclockwise")) {
                 myCurrentPiece.rotateCounterclockwise(getSurrounding());
             } else if (keycode == mySetting.getKey("Soft Drop")) {
+                mySoftDropping = true;
                 myTimer.setDelay(myScoreCounter.getSpeed() / 3);
             }
             if (keycode != mySetting.getKey("Soft Drop")) {
@@ -525,6 +539,9 @@ public class GameScene extends JPanel{
             final int keycode = e.getKeyCode();
             if (keycode == mySetting.getKey("Soft Drop")) {
                 myTimer.setDelay(myScoreCounter.getSpeed());
+                mySoftDropping = false;
+                myScoreCounter.addScore(mySoftDropped);
+                mySoftDropped = 0;
             } else if (keycode == mySetting.getKey("Hard Drop")) {
                 hardDrop();
                 repaint();
