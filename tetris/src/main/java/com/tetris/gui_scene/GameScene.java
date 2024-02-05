@@ -1,10 +1,13 @@
 package com.tetris.gui_scene;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -61,8 +64,11 @@ public class GameScene extends JPanel{
     /** The panel that displays next piece. */
     private final NextBlockPanel myNextBlockPanel;
 
-    /** The button used to start or pause the game. */
-    private final CommonButton myPlayBtn;
+    /** The button used to start the game. */
+    private final CommonButton myNewGameBtn;
+
+    /** The button used to pause the game. */
+    private final CommonButton myPauseBtn;
 
     /** The label for score. */
     private final JLabel myScore;
@@ -94,9 +100,6 @@ public class GameScene extends JPanel{
     /** Whether the current piece is soft dropping. */
     private boolean mySoftDropping;
 
-    /** The number of rows dropped while soft dropping. */
-    private int mySoftDropped;
-
     /**
      * Create a game scene.
      * 
@@ -111,17 +114,14 @@ public class GameScene extends JPanel{
         myFrame = theFrame;
         myGameSpacePanel = new GameSpacePanel(this, theSetting);
         myNextBlockPanel = new NextBlockPanel(this, theSetting);
-        myPlayBtn = new CommonButton("START", theSetting);
+        myNewGameBtn = new CommonButton("NEW GAME", theSetting);
+        myPauseBtn = new CommonButton("PAUSE", theSetting);
         myScore = new JLabel("0");
         myLevel = new JLabel("0");
         myPieces = new PieceUnit[21][13];
         myTimer = new Timer(ScoreCounter.INIT_SPEED, new DropBlockAction());
         myScoreCounter = new ScoreCounter();
         myRand = new Random();
-        myRow = 0;
-        myColumn = 5;
-        mySoftDropping = false;
-        mySoftDropped = 0;
         setup();
     }
 
@@ -153,7 +153,7 @@ public class GameScene extends JPanel{
         gbc.insets = new Insets(5, 10, 5, 10);
 
         // Panel that display pieces
-        gbc.gridheight = 8;
+        gbc.gridheight = 7;
         gbc.fill = GridBagConstraints.VERTICAL;
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -161,7 +161,6 @@ public class GameScene extends JPanel{
 
         // Label for the next piece
         gbc.gridheight = 1;
-        gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.SOUTHWEST;
         gbc.gridx++;
         final JLabel nextLabel = new JLabel("NEXT");
@@ -170,7 +169,6 @@ public class GameScene extends JPanel{
         add(nextLabel, gbc);
 
         // Panel that display next piece
-        gbc.anchor = GridBagConstraints.WEST;
         gbc.gridy++;
         add(myNextBlockPanel, gbc);
 
@@ -194,21 +192,29 @@ public class GameScene extends JPanel{
         myLevel.setForeground(mySetting.getForeground());
         add(myLevel, gbc);
 
-        // Fill empty space
-        gbc.gridy++;
-        gbc.fill = GridBagConstraints.VERTICAL;
-        final JPanel space = new JPanel();
-        space.setVisible(false);
-        add(space, gbc);
+        // Use nested panel to create empty space in grid bag layout
+        final JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(mySetting.getBackground());
+        final JPanel nested = new JPanel(new GridLayout(2, 1, 0, 5));
+        nested.setBackground(mySetting.getBackground());
+        panel.add(nested, BorderLayout.SOUTH);
 
-        // Play button used to start or pause the game.
+        // Play button used to start the game.
+        final Dimension btnSize = new Dimension(144, 50);
+        myNewGameBtn.setPreferredSize(btnSize);
+        myNewGameBtn.setFont(labelFont);
+        myNewGameBtn.addActionListener(new NewGameBtnActionListner());
+        nested.add(myNewGameBtn);
+
+        // Pause button used to pause the game.
+        myPauseBtn.setPreferredSize(btnSize);
+        myPauseBtn.setFont(labelFont);
+        myPauseBtn.addActionListener(new PauseBtnActionListener());
+        myPauseBtn.setEnabled(false);
+        nested.add(myPauseBtn);
+
         gbc.gridy++;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.SOUTHWEST;
-        myPlayBtn.setPreferredSize(new Dimension(144, 50));
-        myPlayBtn.setFont(labelFont);
-        myPlayBtn.addActionListener(new PlayBtnActionListner());
-        add(myPlayBtn, gbc);
+        add(panel, gbc);
     }
 
     /**
@@ -247,7 +253,7 @@ public class GameScene extends JPanel{
                 myPieces[i][j] = null;
             }
         }
-        myPlayBtn.setText("START");
+        myPauseBtn.setEnabled(false);
     }
 
     /**
@@ -384,35 +390,49 @@ public class GameScene extends JPanel{
         
     }
 
+     /**
+     * Action listener for the button used to pause the game.
+     */
+    private class PauseBtnActionListener implements ActionListener {
+         /**
+         * {@inheritDoc}
+         * Pause the game.
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            myFrame.toScene("Pause");
+            myTimer.stop();
+        }
+    }
+
 
     /**
-     * Action listener for the button used to start or pause the game.
+     * Action listener for the button used to start the game.
      */
-    private class PlayBtnActionListner implements ActionListener {
+    private class NewGameBtnActionListner implements ActionListener {
         /**
-             * {@inheritDoc}
-             * Start or pause the game.
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Pause the game
-                if (myPlayBtn.getText().equals("PAUSE")) {
-                    myFrame.toScene("Pause");
-                    myTimer.stop();
-                // Start the game
-                } else {
-                    myPlayBtn.setText("PAUSE");
-                    requestFocusInWindow();
-                    myCurrentPiece = myAllPieces[myRand.nextInt(myAllPieces.length)];
-                    myNextPiece = myAllPieces[myRand.nextInt(myAllPieces.length)];
-                    myScore.setText("0");
-                    myLevel.setText("0");
-                    myGameSpacePanel.repaint();
-                    myNextBlockPanel.repaint();
-                    myTimer.setDelay(myScoreCounter.getSpeed());
-                    myTimer.restart();
-                }
+         * {@inheritDoc}
+         * Start the game.
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (myCurrentPiece != null) {
+                gameOver();
             }
+            requestFocusInWindow();
+            myCurrentPiece = myAllPieces[myRand.nextInt(myAllPieces.length)];
+            myNextPiece = myAllPieces[myRand.nextInt(myAllPieces.length)];
+            myRow = 0;
+            myColumn = 5;
+            mySoftDropping = false;
+            myScore.setText("0");
+            myLevel.setText("0");
+            myGameSpacePanel.repaint();
+            myNextBlockPanel.repaint();
+            myPauseBtn.setEnabled(true);
+            myTimer.setDelay(myScoreCounter.getSpeed());
+            myTimer.restart();
+        }
     }
 
     /**
@@ -450,7 +470,7 @@ public class GameScene extends JPanel{
                 myNextBlockPanel.repaint();
             } else {
                 myRow++;
-                if (mySoftDropping) { mySoftDropped++; }
+                if (mySoftDropping) { myScoreCounter.addScore(1); }
             }
             myGameSpacePanel.repaint();
         }
@@ -540,8 +560,6 @@ public class GameScene extends JPanel{
             if (keycode == mySetting.getKey("Soft Drop")) {
                 myTimer.setDelay(myScoreCounter.getSpeed());
                 mySoftDropping = false;
-                myScoreCounter.addScore(mySoftDropped);
-                mySoftDropped = 0;
             } else if (keycode == mySetting.getKey("Hard Drop")) {
                 hardDrop();
                 repaint();
