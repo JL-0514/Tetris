@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -14,7 +13,7 @@ import com.tetris.model.PieceUnit;
 import com.tetris.model.Setting;
 
 /**
- * The panel that act as a 10x20 grid and display pieces.
+ * The panel that act as a 10 units wide and 20 units high grid that display pieces.
  * 
  * @author Jiameng Li
  * @version 1.0
@@ -60,7 +59,6 @@ public class GameSpacePanel extends JPanel {
         super.paintComponent(g);
         if (myGameScene.getCurrentPiece() == null) { return; }
         final Graphics2D graphics = (Graphics2D) g;
-        graphics.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_DEFAULT);
         final PieceUnit[][] units = myGameScene.getPieces();
         final Piece current = myGameScene.getCurrentPiece();
         final int[][] shape = current.getCurrentShape();

@@ -102,6 +102,9 @@ public class GameScene extends JPanel{
     /** Whether a wall kick is performed. */
     private boolean myHasKick;
 
+    /** If 0, not T-spin. If 1, mini T-spin. If 2, full T-spin. */
+    private int myTSpin;
+
     /**
      * Create a game scene.
      * 
@@ -120,11 +123,12 @@ public class GameScene extends JPanel{
         myPauseBtn = new CommonButton("PAUSE", theSetting);
         myScore = new JLabel("0");
         myLevel = new JLabel("0");
-        myPieces = new PieceUnit[21][13];
+        myPieces = new PieceUnit[21][14];
         myTimer = new Timer(ScoreCounter.INIT_SPEED, new DropBlockAction());
         myScoreCounter = new ScoreCounter();
         myRand = new Random();
         myHasKick = false;
+        myTSpin = 0;
         setup();
     }
 
@@ -147,7 +151,7 @@ public class GameScene extends JPanel{
             myPieces[i][1] = WALL;
             myPieces[i][12] = WALL;
         }
-        for (int i = 0; i < 13; i++) {
+        for (int i = 0; i < 14; i++) {
             myPieces[20][i] = WALL;
         } 
 
@@ -252,6 +256,7 @@ public class GameScene extends JPanel{
         myCurrentPiece = null;
         myNextPiece = null;
         myHasKick = false;
+        myTSpin = 0;
         for (int i = 0; i < 20; i++) {
             for (int j = 2; j < 12; j++) {
                 myPieces[i][j] = null;
@@ -356,7 +361,7 @@ public class GameScene extends JPanel{
             for (int c = 0; c < surrounding[0].length; c++) {
                 final int row = myRow - i + theDown;
                 final int col = myColumn + c + theRight;
-                if (row > 20 || row < 0 || col > 12 || col < 0) {
+                if (row > 20 || row < 0 || col > 13 || col < 0) {
                     surrounding[r][c] = WALL;
                 } else {
                     surrounding[r][c] = myPieces[myRow - i + theDown][myColumn + c + theRight];
@@ -400,8 +405,6 @@ public class GameScene extends JPanel{
                 myScoreCounter.addLine(lines); 
             }
         }
-        myHasKick = false;
-        
     }
 
      /**
@@ -486,6 +489,8 @@ public class GameScene extends JPanel{
                 myRow++;
                 if (mySoftDropping) { myScoreCounter.addScore(1); }
             }
+            myHasKick = false;
+            myTSpin = 0;
             myGameSpacePanel.repaint();
         }
     }
@@ -574,10 +579,14 @@ public class GameScene extends JPanel{
                 myGameSpacePanel.repaint();
             }
             // For wall kick
-            if (move != null) {
+            if (move != null && move[0] != 0 && move[1] != 0) {
                 myRow += move[0];
                 myColumn += move[1];
                 myHasKick = true;
+            }
+            // For T-spin and mini T-spin
+            if (move != null && myCurrentPiece instanceof TPiece) {
+                myTSpin = ((TPiece) myCurrentPiece).isTSpin(myScene);
             }
         }
 

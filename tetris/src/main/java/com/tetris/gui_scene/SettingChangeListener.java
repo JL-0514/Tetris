@@ -44,17 +44,27 @@ public class SettingChangeListener implements PropertyChangeListener{
      */
     public void propertyChange(final PropertyChangeEvent e) {
         if (e.getPropertyName().equals("color")) {
-            myPanel.setBackground(mySetting.getBackground());
-            myPanel.setForeground(mySetting.getForeground());
-            for (Component c : myPanel.getComponents()) {
-                c.setForeground(mySetting.getForeground());
-                c.setBackground(mySetting.getBackground());
-                final Border b = ((JComponent) c).getBorder();
-                if (b != null && b instanceof LineBorder) {
-                    ((JComponent) c).setBorder(BorderFactory.createLineBorder(mySetting.getForeground(), 
-                                                ((LineBorder) b).getThickness()));
-                }
-            }
+            changeRecursive(myPanel);
+        }
+    }
+
+    /**
+     * Recursively change the background and foreground color of the given component
+     * and all the components inside it.
+     * 
+     * @param theComponent The component to be changed.
+     */
+    private void changeRecursive(final Component theComponent) {
+        final JComponent component = (JComponent) theComponent;
+        component.setBackground(mySetting.getBackground());
+        component.setForeground(mySetting.getForeground());
+        final Border b = component.getBorder();
+        if (b != null && b instanceof LineBorder) {
+            component.setBorder(BorderFactory.createLineBorder(mySetting.getForeground(), 
+                                ((LineBorder) b).getThickness()));
+        }
+        for (Component c : component.getComponents()) {
+            changeRecursive(c);
         }
     }
     

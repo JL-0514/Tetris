@@ -94,11 +94,6 @@ public class ScoreCounter {
      * @param theLine Number of lines cleared.
      */
     public void addLine(final int theLine) {
-        if (myLine / 10 < (myLine + theLine) / 10 && (myLine + theLine) % 10 != 0) {
-            final int remain = (myLine + theLine) % 10;
-            addLine(theLine - remain);
-            addLine(remain);
-        }
         // Add score
         switch (theLine) {
             case 1:
@@ -117,10 +112,10 @@ public class ScoreCounter {
                 break;
         }
         // Increment level
-        myLine += theLine;
-        if (myLine % 10 == 0) {
+        if (myLine / 10 < (myLine + theLine) / 10) {
             incrementLevel();
         }
+        myLine += theLine;
     }
 
     /**
@@ -138,6 +133,9 @@ public class ScoreCounter {
         myPCS.firePropertyChange("level", myLevel - 1, myLevel);
     }
 
+    /**
+     * Reset the setting.
+     */
     public void reset() {
         myLevel = 0;
         myLine = 0;

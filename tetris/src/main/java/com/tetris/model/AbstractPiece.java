@@ -21,7 +21,7 @@ public class AbstractPiece implements Piece {
      * The default positions are listed below. I-block and O-block have their own position.
      */
 
-    /** The wall kick data that specify the number of rows and columns to move */
+    /** The wall kick data that specify the number of {columns, rows} to move */
     private static final int[][][] DEFAULT_WALL_KICK = {
         {{0, 0}, {-1, 0}, {-1, -1}, {0, 2}, {-1, 2}}, 
         {{0, 0}, {1, 0}, {1, 1}, {0, -2}, {1, -2}}, 
@@ -78,6 +78,15 @@ public class AbstractPiece implements Piece {
     }
 
     /**
+     * Get the index of the current shape.
+     * 
+     * @return The index of the current shape.
+     */
+    protected int getCurrentShapeIdx() {
+        return myCurrentShape;
+    }
+
+    /**
      * Get the current shape of the piece.
      * 
      * @return The current shape of the piece.
@@ -127,6 +136,7 @@ public class AbstractPiece implements Piece {
      * 
      * @param theScene The game scene.
      * @return An array [row, column] that represent how many rows and columns to move when rotating.
+     *         If the rotation fails, return null.
      */
     public int[] rotateClockwise(final GameScene theScene) {
         int[] move = null;
@@ -150,6 +160,7 @@ public class AbstractPiece implements Piece {
      * 
      * @param theScene The game scene.
      * @return An array [row, column] that represent how many rows and columns to move when rotating.
+     *         If the rotation fails, return null.
      */
     public int[] rotateCounterclockwise(final GameScene theScene) {
         int[] move = null;
