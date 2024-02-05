@@ -2,6 +2,8 @@ package com.tetris.model;
 
 import java.util.Random;
 
+import com.tetris.gui_scene.GameScene;
+
 import java.awt.Color;
 
 /**
@@ -11,6 +13,21 @@ import java.awt.Color;
  * @version 1.0
  */
 public class AbstractPiece implements Piece {
+
+    /*
+     * Wall kick:
+     * When the piece is rotating, there are five different position it may end up with.
+     * If it can't move to one of those positions, the rotation fails.
+     * The default positions are listed below. I-block and O-block have their own position.
+     */
+
+    /** The wall kick data that specify the number of rows and columns to move */
+    private static final int[][][] DEFAULT_WALL_KICK = {
+        {{0, 0}, {-1, 0}, {-1, -1}, {0, 2}, {-1, 2}}, 
+        {{0, 0}, {1, 0}, {1, 1}, {0, -2}, {1, -2}}, 
+        {{0, 0}, {1, 0}, {1, -1}, {0, 2}, {1, 2}}, 
+        {{0, 0}, {-1, 0}, {-1, 1}, {0, -2}, {-1, -2}}
+    };
 
     /** Used to select random shape from the piece. */
     private static Random myRand = new Random();
@@ -33,14 +50,19 @@ public class AbstractPiece implements Piece {
     /** The instance of unit used to make piece. */
     private PieceUnit myUnit;
 
+    /** Wall kick data of this piece. */
+    private final int[][][] myWalkKick;
+
     /**
      * Constructor of abstract piece with given shapes and colors.
      * 
      * @param theShapes All possible shapes of the piece.
      * @param theBright The brighter color.
      * @param theDark The darker color.
+     * @param theWallKick Wall kick data of this piece.
      */
-    protected AbstractPiece(final int[][][] theShapes, final Color theBright, final Color theDark) {
+    protected AbstractPiece(final int[][][] theShapes, final Color theBright, final Color theDark, 
+                            final int[][][] theWallKick) {
         super();
         myAllShapes = theShapes;
         myCurrentShape = myRand.nextInt(theShapes.length);
@@ -48,6 +70,11 @@ public class AbstractPiece implements Piece {
         myBrightColor = theBright;
         myDarkColor = theDark;
         myUnit = new PieceUnit(theBright, theDark);
+        if (theWallKick == null) {
+            myWalkKick = DEFAULT_WALL_KICK;
+        } else {
+            myWalkKick = theWallKick;
+        }
     }
 
     /**
@@ -98,31 +125,47 @@ public class AbstractPiece implements Piece {
     /**
      * Rotate the piece clockwise by 90 degrees.
      * 
-     * @param theSurrounding The area the piece may touch as it rotate.
+     * @param theScene The game scene.
+     * @return An array [row, column] that represent how many rows and columns to move when rotating.
      */
-    public void rotateClockwise(PieceUnit[][] theSurrounding) {
+    public int[] rotateClockwise(final GameScene theScene) {
+        int[] move = null;
         int target = myCurrentShape + 1;
         if (target == myAllShapes.length) {
             target = 0;
         }
-        if (isValidRotate(theSurrounding, target)) {
-            myCurrentShape = target;
+        for (int[] wk : myWalkKick[myCurrentShape]) {
+            final PieceUnit[][] surrounding = theScene.getSurrounding(wk[1], wk[0]);
+            if (isValidRotate(surrounding, target)) {
+                myCurrentShape = target;
+                move = new int[]{wk[1], wk[0]};
+                break;
+            }
         }
+        return move;
     }
 
     /**
      * Rotate the piece counterclockwise by 90 degrees.
      * 
-     * @param theSurrounding The area the piece may touch as it rotate.
+     * @param theScene The game scene.
+     * @return An array [row, column] that represent how many rows and columns to move when rotating.
      */
-    public void rotateCounterclockwise(PieceUnit[][] theSurrounding) {
+    public int[] rotateCounterclockwise(final GameScene theScene) {
+        int[] move = null;
         int target = myCurrentShape - 1;
         if (target == -1) {
             target = myAllShapes.length - 1;
         }
-        if (isValidRotate(theSurrounding, target)) {
-            myCurrentShape = target;
+        for (int[] wk : myWalkKick[target]) {
+            final PieceUnit[][] surrounding = theScene.getSurrounding(-wk[1], -wk[0]);
+            if (isValidRotate(surrounding, target)) {
+                myCurrentShape = target;
+                move = new int[]{-wk[1], -wk[0]};
+                break;
+            }
         }
+        return move;
     }
 
     /**

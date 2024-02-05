@@ -21,11 +21,19 @@ public class OPiece extends AbstractPiece {
         }
     };
 
+    /** The wall kick data that specify the number of rows and columns to move */
+    private static final int[][][] WALL_KICK = {
+        {{0, 0}}, 
+        {{0, 0}}, 
+        {{0, 0}}, 
+        {{0, 0}}
+    };
+
     /**
      * Create a O-Piece.
      */
     public OPiece() {
-        super(ALL_SHAPES, new Color(122, 232, 70), new Color(43, 105, 13));
+        super(ALL_SHAPES, new Color(122, 232, 70), new Color(43, 105, 13), WALL_KICK);
     }   
 
 }

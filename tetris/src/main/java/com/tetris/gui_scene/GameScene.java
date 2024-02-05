@@ -3,7 +3,6 @@ package com.tetris.gui_scene;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -100,6 +99,9 @@ public class GameScene extends JPanel{
     /** Whether the current piece is soft dropping. */
     private boolean mySoftDropping;
 
+    /** Whether a wall kick is performed. */
+    private boolean myHasKick;
+
     /**
      * Create a game scene.
      * 
@@ -122,6 +124,7 @@ public class GameScene extends JPanel{
         myTimer = new Timer(ScoreCounter.INIT_SPEED, new DropBlockAction());
         myScoreCounter = new ScoreCounter();
         myRand = new Random();
+        myHasKick = false;
         setup();
     }
 
@@ -134,7 +137,7 @@ public class GameScene extends JPanel{
         setForeground(mySetting.getForeground());
         mySetting.addPropertyChangeListener(new SettingChangeListener(this, mySetting));
         mySetting.addPropertyChangeListener(new PieceChangeListener());
-        addKeyListener(new GameSceneKeyAdapter());
+        addKeyListener(new GameSceneKeyAdapter(this));
         myScoreCounter.addPropertyChangeListener(new ScoreChangeListener());
         myTimer.setInitialDelay(0);
 
@@ -248,6 +251,7 @@ public class GameScene extends JPanel{
         myScoreCounter.reset();
         myCurrentPiece = null;
         myNextPiece = null;
+        myHasKick = false;
         for (int i = 0; i < 20; i++) {
             for (int j = 2; j < 12; j++) {
                 myPieces[i][j] = null;
@@ -342,13 +346,21 @@ public class GameScene extends JPanel{
      * Get the surrounding of the current piece, that is, the piece units the current piece
      * may touch as it rotate.
      * 
+     * @param theDown Get the surrounding n rows below the current piece.
+     * @param theRight Get the surrounding n columns on the right of the current piece.
      * @return The surrounding of the current piece.
      */
-    private PieceUnit[][] getSurrounding() {
+    public PieceUnit[][] getSurrounding(final int theDown, final int theRight) {
         PieceUnit[][] surrounding = new PieceUnit[myCurrentPiece.getSize()][myCurrentPiece.getSize()];
         for (int r = surrounding.length - 1, i = 0; r > -1 && myRow - i > -1; r--, i++) {
             for (int c = 0; c < surrounding[0].length; c++) {
-                surrounding[r][c] = myPieces[myRow - i][myColumn + c];
+                final int row = myRow - i + theDown;
+                final int col = myColumn + c + theRight;
+                if (row > 20 || row < 0 || col > 12 || col < 0) {
+                    surrounding[r][c] = WALL;
+                } else {
+                    surrounding[r][c] = myPieces[myRow - i + theDown][myColumn + c + theRight];
+                }
             }
         }
         return surrounding;
@@ -383,10 +395,12 @@ public class GameScene extends JPanel{
                     lines++;
                 }
             }
+            // TODO Implement scoring for T-spin, back-to-back, and wall kick
             if (lines > 0) {
                 myScoreCounter.addLine(lines); 
             }
         }
+        myHasKick = false;
         
     }
 
@@ -517,6 +531,19 @@ public class GameScene extends JPanel{
      */
     private class GameSceneKeyAdapter extends KeyAdapter {
 
+        /** The game scene that use this key adapter. */
+        private final GameScene myScene;
+
+        /**
+         * Create a key adapter.
+         * 
+         * @param theScene The game scene that use this key adapter.
+         */
+        public GameSceneKeyAdapter(final GameScene theScene) {
+            super();
+            myScene = theScene;
+        }
+
         /**
          * {@inheritDoc}
          * Perform one of the following operations on the current piece based on the key pressed: 
@@ -530,20 +557,27 @@ public class GameScene extends JPanel{
         public void keyPressed(final KeyEvent e) {
             if (!myTimer.isRunning() || myCurrentPiece == null) { return; }
             final int keycode = e.getKeyCode();
+            int[] move = null;
             if (keycode == mySetting.getKey("Shift Left") && canMove(myRow, myColumn - 1)) {
                 myColumn--;
             } else if (keycode == mySetting.getKey("Shift Right") && canMove(myRow, myColumn + 1)) {
                 myColumn++;
             } else if (keycode == mySetting.getKey("Rotate Clockwise")) {
-                myCurrentPiece.rotateClockwise(getSurrounding());
+                move = myCurrentPiece.rotateClockwise(myScene);
             } else if (keycode == mySetting.getKey("Rotate Counterclockwise")) {
-                myCurrentPiece.rotateCounterclockwise(getSurrounding());
+                move = myCurrentPiece.rotateCounterclockwise(myScene);
             } else if (keycode == mySetting.getKey("Soft Drop")) {
                 mySoftDropping = true;
                 myTimer.setDelay(myScoreCounter.getSpeed() / 3);
             }
             if (keycode != mySetting.getKey("Soft Drop")) {
                 myGameSpacePanel.repaint();
+            }
+            // For wall kick
+            if (move != null) {
+                myRow += move[0];
+                myColumn += move[1];
+                myHasKick = true;
             }
         }
 
