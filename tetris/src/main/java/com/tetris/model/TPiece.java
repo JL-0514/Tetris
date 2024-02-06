@@ -2,8 +2,6 @@ package com.tetris.model;
 
 import java.awt.Color;
 
-import com.tetris.gui_scene.GameScene;
-
 /**
  * The T-Piece.
  * Overall color: yellow orange.
@@ -50,26 +48,25 @@ public class TPiece extends AbstractPiece {
      * 
      * @return 0 if not T-spin, 1 if mini T-spin, 2 if full T-spin.
      */
-    public int isTSpin(final GameScene theScene) {
+    public int isTSpin(final PieceUnit[][] theSurrounding) {
         int spin = 0;
-        final PieceUnit[][] surrounding = theScene.getSurrounding(0, 0);
         PieceUnit u1 = null, u2 = null;
         switch (super.getCurrentShapeIdx()) {
             case 0:
-                u1 = surrounding[0][0];
-                u2 = surrounding[0][2];
+                u1 = theSurrounding[0][0];
+                u2 = theSurrounding[0][2];
                 break;
             case 1:
-                u1 = surrounding[0][2];
-                u2 = surrounding[2][2];
+                u1 = theSurrounding[0][2];
+                u2 = theSurrounding[2][2];
                 break;
             case 2:
-                u1 = surrounding[2][2];
-                u2 = surrounding[2][0];
+                u1 = theSurrounding[2][2];
+                u2 = theSurrounding[2][0];
                 break;
             case 3:
-                u1 = surrounding[2][0];
-                u2 = surrounding[0][0];
+                u1 = theSurrounding[2][0];
+                u2 = theSurrounding[0][0];
                 break;
             default:
                 break;

@@ -8,6 +8,7 @@ import java.awt.GridBagLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
+import com.tetris.model.GameSpace;
 import com.tetris.model.Piece;
 import com.tetris.model.Setting;
 
@@ -20,8 +21,8 @@ import com.tetris.model.Setting;
  */
 public class NextBlockPanel extends JPanel {
 
-    /** The game scene. */
-    private final GameScene myGameScene;
+     /** The game space. */
+    private final GameSpace myGameSpace;
 
     /** The general setting of the game. */
     private final Setting mySetting;
@@ -29,12 +30,12 @@ public class NextBlockPanel extends JPanel {
     /**
      * Create a panel that display next block.
      * 
-     * @param thePanel The game scene.
+     * @param theSpace The game space.
      * @param theSetting The general setting of the game.
      */
-    public NextBlockPanel(final GameScene thePanel, final Setting theSetting) {
+    public NextBlockPanel(final GameSpace theSpace, final Setting theSetting) {
         super(new GridBagLayout());
-        myGameScene = thePanel;
+        myGameSpace = theSpace;
         mySetting = theSetting;
         setup();
     }
@@ -57,9 +58,9 @@ public class NextBlockPanel extends JPanel {
     @Override
     public void paintComponent(final Graphics g) {
         super.paintComponent(g);
-        if (myGameScene.getNextPiece() == null) { return; }
+        if (myGameSpace.getNextPiece() == null) { return; }
         Graphics2D graphics = (Graphics2D) g;
-        final Piece myNext = myGameScene.getNextPiece();
+        final Piece myNext = myGameSpace.getNextPiece();
         final int[][] shape = myNext.getNextShape();
         int start = 144 / 2 - shape.length * 24 / 2;
         int y = start;

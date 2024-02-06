@@ -2,8 +2,6 @@ package com.tetris.model;
 
 import java.awt.Color;
 
-import com.tetris.gui_scene.GameScene;
-
 /**
  * Interface that represents all types of pieces in tetris.
  * 
@@ -49,18 +47,18 @@ public interface Piece {
     /**
      * Rotate the piece clockwise by 90 degrees.
      * 
-     * @param theScene The game scene.
+     * @param theSpace The game space.
      * @return An array [row, column] that represent how many rows and columns to move when rotating.
      */
-    public int[] rotateClockwise(GameScene theScene);
+    public int[] rotateClockwise(GameSpace theSpace);
 
     /**
      * Rotate the piececounterclockwise by 90 degrees.
      * 
-     * @param theScene The game scene.
+     * @param theSpace The game space.
      * @return An array [row, column] that represent how many rows and columns to move when rotating.
      */
-    public int[] rotateCounterclockwise(GameScene theScene);
+    public int[] rotateCounterclockwise(GameSpace theSpace);
 
     /**
      * Check whether the piece can be rotated in the given surrounding.

@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
+import com.tetris.model.GameSpace;
 import com.tetris.model.Piece;
 import com.tetris.model.PieceUnit;
 import com.tetris.model.Setting;
@@ -20,8 +21,8 @@ import com.tetris.model.Setting;
  */
 public class GameSpacePanel extends JPanel {
 
-    /** The game scene. */
-    private final GameScene myGameScene;
+    /** The game space. */
+    private final GameSpace myGameSpace;
 
     /** The general setting of the game. */
     private final Setting mySetting;
@@ -29,12 +30,12 @@ public class GameSpacePanel extends JPanel {
     /**
      * Create a panel that display pieces.
      * 
-     * @param thePanel The game scene.
+     * @param theSpace The game space.
      * @param theSetting The general setting of the game.
      */
-    public GameSpacePanel(final GameScene thePanel, final Setting theSetting) {
+    public GameSpacePanel(final GameSpace theSpace, final Setting theSetting) {
         super();
-        myGameScene = thePanel;
+        myGameSpace = theSpace;
         mySetting = theSetting;
         setup();
     }
@@ -57,10 +58,10 @@ public class GameSpacePanel extends JPanel {
     @Override
     public void paintComponent(final Graphics g) {
         super.paintComponent(g);
-        if (myGameScene.getCurrentPiece() == null) { return; }
+        if (myGameSpace.getCurrentPiece() == null) { return; }
         final Graphics2D graphics = (Graphics2D) g;
-        final PieceUnit[][] units = myGameScene.getPieces();
-        final Piece current = myGameScene.getCurrentPiece();
+        final PieceUnit[][] units = myGameSpace.getPieces();
+        final Piece current = myGameSpace.getCurrentPiece();
         final int[][] shape = current.getCurrentShape();
 
         // Draw a line to assist the user
@@ -78,7 +79,7 @@ public class GameSpacePanel extends JPanel {
             }
         }
         int y = 10;
-        int x = 10 + (myGameScene.getCurrentColumn() - 2 + hasUnit) * PieceUnit.SIZE;
+        int x = 10 + (myGameSpace.getCurrentColumn() - 2 + hasUnit) * PieceUnit.SIZE;
         if (mySetting.getBackground() == Color.BLACK) {
             graphics.setColor(Color.DARK_GRAY);
         } else {
@@ -100,9 +101,9 @@ public class GameSpacePanel extends JPanel {
         }
 
         // Paint current piece
-        y = 10 + myGameScene.getCurrentRow() * PieceUnit.SIZE;
+        y = 10 + myGameSpace.getCurrentRow() * PieceUnit.SIZE;
         for (int r = shape.length - 1; r > -1 && y > 0; r--) {
-            x = 10 + (myGameScene.getCurrentColumn() + shape[0].length - 3) * PieceUnit.SIZE;
+            x = 10 + (myGameSpace.getCurrentColumn() + shape[0].length - 3) * PieceUnit.SIZE;
             for (int c = shape[0].length - 1; c > -1 && x > 0; c--) {
                 if (shape[r][c] == 1) {
                     current.getUnit().paintUnit(graphics, x, y, PieceUnit.SUB_SIZE);

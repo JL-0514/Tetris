@@ -2,8 +2,6 @@ package com.tetris.model;
 
 import java.util.Random;
 
-import com.tetris.gui_scene.GameScene;
-
 import java.awt.Color;
 
 /**
@@ -134,18 +132,18 @@ public class AbstractPiece implements Piece {
     /**
      * Rotate the piece clockwise by 90 degrees.
      * 
-     * @param theScene The game scene.
+     * @param theSpace The game space.
      * @return An array [row, column] that represent how many rows and columns to move when rotating.
      *         If the rotation fails, return null.
      */
-    public int[] rotateClockwise(final GameScene theScene) {
+    public int[] rotateClockwise(final GameSpace theSpace) {
         int[] move = null;
         int target = myCurrentShape + 1;
         if (target == myAllShapes.length) {
             target = 0;
         }
         for (int[] wk : myWalkKick[myCurrentShape]) {
-            final PieceUnit[][] surrounding = theScene.getSurrounding(wk[1], wk[0]);
+            final PieceUnit[][] surrounding = theSpace.getSurrounding(wk[1], wk[0]);
             if (isValidRotate(surrounding, target)) {
                 myCurrentShape = target;
                 move = new int[]{wk[1], wk[0]};
@@ -158,18 +156,18 @@ public class AbstractPiece implements Piece {
     /**
      * Rotate the piece counterclockwise by 90 degrees.
      * 
-     * @param theScene The game scene.
+     * @param theSpace The game space.
      * @return An array [row, column] that represent how many rows and columns to move when rotating.
      *         If the rotation fails, return null.
      */
-    public int[] rotateCounterclockwise(final GameScene theScene) {
+    public int[] rotateCounterclockwise(final GameSpace theSpace) {
         int[] move = null;
         int target = myCurrentShape - 1;
         if (target == -1) {
             target = myAllShapes.length - 1;
         }
         for (int[] wk : myWalkKick[target]) {
-            final PieceUnit[][] surrounding = theScene.getSurrounding(-wk[1], -wk[0]);
+            final PieceUnit[][] surrounding = theSpace.getSurrounding(-wk[1], -wk[0]);
             if (isValidRotate(surrounding, target)) {
                 myCurrentShape = target;
                 move = new int[]{-wk[1], -wk[0]};
