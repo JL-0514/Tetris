@@ -1,6 +1,8 @@
-package com.tetris.model;
+package com.tetris.pieces;
 
 import java.util.Random;
+
+import com.tetris.model.GameSpace;
 
 import java.awt.Color;
 

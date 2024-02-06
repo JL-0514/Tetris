@@ -9,8 +9,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 import com.tetris.model.GameSpace;
-import com.tetris.model.Piece;
 import com.tetris.model.Setting;
+import com.tetris.pieces.Piece;
 
 /**
  * The panel that display next block.

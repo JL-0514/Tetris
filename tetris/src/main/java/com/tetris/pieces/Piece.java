@@ -1,6 +1,8 @@
-package com.tetris.model;
+package com.tetris.pieces;
 
 import java.awt.Color;
+
+import com.tetris.model.GameSpace;
 
 /**
  * Interface that represents all types of pieces in tetris.

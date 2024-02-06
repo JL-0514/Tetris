@@ -5,6 +5,16 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Random;
 
+import com.tetris.pieces.IPiece;
+import com.tetris.pieces.JPiece;
+import com.tetris.pieces.LPiece;
+import com.tetris.pieces.OPiece;
+import com.tetris.pieces.Piece;
+import com.tetris.pieces.PieceUnit;
+import com.tetris.pieces.SPiece;
+import com.tetris.pieces.TPiece;
+import com.tetris.pieces.ZPiece;
+
 /**
  * The game space contains all the pieces used in the game.
  * 
