@@ -232,7 +232,8 @@ public class GameSpace {
      */
     public void clearLine(final ScoreCounter theCounter) {
         int cleared = 0;
-        for (int r = 19; r > -1; r--) {
+        int r = myRow < 20 ? myRow : 19;
+        for (; r > myRow - myCurrentPiece.getSize() && r > -1; r--) {
             boolean fill = true;
             int lines = 0;
             while (fill) {
@@ -255,9 +256,11 @@ public class GameSpace {
                     lines++;
                 }
             }
-            // TODO Implement scoring for T-spin and back-to-back
-            if (lines > 0) {
-                theCounter.addLine(lines); 
+            if (lines > 0 || (lines == 0 && myTSpin == 2)) {
+                theCounter.addLine(lines, myTSpin == 1, myTSpin == 2, myHasKick); 
+                if (myTSpin == 2 && lines > 1) {    // Prevent adding additional score
+                    myTSpin = 0;
+                }
             }
         }
     }

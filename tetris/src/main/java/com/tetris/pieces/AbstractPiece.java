@@ -21,12 +21,12 @@ public class AbstractPiece implements Piece {
      * The default positions are listed below. I-block and O-block have their own position.
      */
 
-    /** The wall kick data that specify the number of {columns, rows} to move */
+    /** The wall kick data that specify the number of {rows, columns} to move */
     private static final int[][][] DEFAULT_WALL_KICK = {
-        {{0, 0}, {-1, 0}, {-1, -1}, {0, 2}, {-1, 2}}, 
-        {{0, 0}, {1, 0}, {1, 1}, {0, -2}, {1, -2}}, 
-        {{0, 0}, {1, 0}, {1, -1}, {0, 2}, {1, 2}}, 
-        {{0, 0}, {-1, 0}, {-1, 1}, {0, -2}, {-1, -2}}
+        {{0, 0}, {0, -1}, {-1, -1}, {2, 0}, {2, -1}}, 
+        {{0, 0}, {0, 1}, {1, 1}, {-2, 0}, {-2, 1}}, 
+        {{0, 0}, {0, 1}, {-1, 1}, {2, 0}, {2, 1}}, 
+        {{0, 0}, {0 ,-1}, {1, -1}, {-2, 0}, {-2, -1}}
     };
 
     /** Used to select random shape from the piece. */
@@ -145,10 +145,10 @@ public class AbstractPiece implements Piece {
             target = 0;
         }
         for (int[] wk : myWalkKick[myCurrentShape]) {
-            final PieceUnit[][] surrounding = theSpace.getSurrounding(wk[1], wk[0]);
+            final PieceUnit[][] surrounding = theSpace.getSurrounding(wk[0], wk[1]);
             if (isValidRotate(surrounding, target)) {
                 myCurrentShape = target;
-                move = new int[]{wk[1], wk[0]};
+                move = new int[]{wk[0], wk[1]};
                 break;
             }
         }
@@ -169,10 +169,10 @@ public class AbstractPiece implements Piece {
             target = myAllShapes.length - 1;
         }
         for (int[] wk : myWalkKick[target]) {
-            final PieceUnit[][] surrounding = theSpace.getSurrounding(-wk[1], -wk[0]);
+            final PieceUnit[][] surrounding = theSpace.getSurrounding(-wk[0], -wk[1]);
             if (isValidRotate(surrounding, target)) {
                 myCurrentShape = target;
-                move = new int[]{-wk[1], -wk[0]};
+                move = new int[]{-wk[0], -wk[1]};
                 break;
             }
         }
