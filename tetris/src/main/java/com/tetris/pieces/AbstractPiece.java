@@ -78,6 +78,15 @@ public class AbstractPiece implements Piece {
     }
 
     /**
+     * Set the current shape to the corresponding shape of the given index.
+     * 
+     * @param theIdx Index of the shape.
+     */
+    protected void setCurrentShapeIdx(final int theIdx) {
+        myCurrentShape = theIdx;
+    }
+
+    /**
      * Get the index of the current shape.
      * 
      * @return The index of the current shape.

@@ -99,6 +99,7 @@ public class ScoreCounter {
 
     /**
      * Add a number of lines cleared and update the score and level.
+     * Decide the type of current line clear and call the corresponding methods to get the score to update.
      * 
      * @param theLine Number of lines cleared.
      * @param theMiniT Whether a mini T-spin is performed.
@@ -215,6 +216,13 @@ public class ScoreCounter {
         return score;
     }
 
+    /**
+     * Get the score for back-to-back.
+     * 
+     * @param theRecord The record for current line clear.
+     * @param theKick Whether a wall kick is performed.
+     * @return The score for back-to-back.
+     */
     private int scoreBackToBack(final int[] theRecord, final boolean theKick) {
         int score = 0;
         // Not same type as previous line clear

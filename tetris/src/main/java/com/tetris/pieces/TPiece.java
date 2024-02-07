@@ -53,8 +53,13 @@ public class TPiece extends AbstractPiece {
      */
     public int isTSpin(final PieceUnit[][] theSurrounding) {
         int spin = 0;
-        if (theSurrounding[0][0] == null ^ theSurrounding[0][2] == null ^
-            theSurrounding[2][0] == null ^ theSurrounding[2][2] == null) {
+        int count = 0;
+        // Count how many units in the corner
+        count += theSurrounding[0][0] != null ? 1 : 0;
+        count += theSurrounding[0][2] != null ? 1 : 0;
+        count += theSurrounding[2][0] != null ? 1 : 0;
+        count += theSurrounding[2][2] != null ? 1 : 0;
+        if (count > 2) {
             PieceUnit u1 = null, u2 = null;
             switch (super.getCurrentShapeIdx()) {
                 case 0:
