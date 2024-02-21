@@ -9,9 +9,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 import com.tetris.model.GameSpace;
+import com.tetris.model.Piece;
+import com.tetris.model.PieceUnit;
 import com.tetris.model.Setting;
-import com.tetris.pieces.Piece;
-import com.tetris.pieces.PieceUnit;
 
 /**
  * The panel that act as a 10 units wide and 20 units high grid that display pieces.

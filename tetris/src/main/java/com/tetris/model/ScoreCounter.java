@@ -13,6 +13,9 @@ import java.util.Arrays;
  */
 public class ScoreCounter {
 
+    /** Number that represent Tetris (4 line clear). */
+    public static final int TETRIS = 3;
+
     /** The initial speed of the game. */
     public static final int INIT_SPEED = 790;
 
@@ -30,7 +33,7 @@ public class ScoreCounter {
 
     /** 
      * The record for back-to-back. 
-     * The first index keep the previous type of line clear; 1, 2, 3 corresponding to mini T-spin, Tetris, and T-spin.
+     * The first index keep the previous type of line clear, such as mini T-spin, full T-spin, and Tetris.
      * The second index keep how many line cleared in previous line clear.
      * */
     private int[] myBackToBack;
@@ -113,10 +116,10 @@ public class ScoreCounter {
         if (record[0] != 0 && myBackToBack[0] != 0) {
             addScore(scoreBackToBack(record, theKick));
         // Mini or full T-spin
-        } else if (record[0] == 1 || record[0] == 3) {
+        } else if (record[0] == TPiece.MINI_T_SPIN || record[0] == TPiece.FULL_T_SPIN) {
             addScore(scoreTSpin(record, theKick));
         // Regular line clear or Tetris
-        } else if (record[0] == 0 || record[0] == 2) {
+        } else if (record[0] == 0 || record[0] == TETRIS) {
             addScore(scoreRegular(theLine));
         }
         myBackToBack = record.clone();
@@ -138,11 +141,11 @@ public class ScoreCounter {
     private int[] recordType(final int theLine, final boolean theMiniT, final boolean theFullT) {
         int[] record = new int[2];
         if (theMiniT) {                 // Mini T-spin
-            record[0] = 1;
-        } else if (theLine == 4) {      // Tetris
-            record[0] = 2;
+            record[0] = TPiece.MINI_T_SPIN;
         } else if (theFullT) {          // Full T-spin
-            record[0] = 3;
+            record[0] = TPiece.FULL_T_SPIN;
+        } else if (theLine == 4) {      // Tetris
+            record[0] = TETRIS;
         }
         record[1] = theLine;
         return record;
@@ -184,7 +187,7 @@ public class ScoreCounter {
      */
     private int scoreTSpin(final int[] theRecord, final boolean theKick) {
         int score = 0;
-        if (theRecord[0] == 2 && theRecord[1] == 2) {
+        if (theRecord[0] == TPiece.MINI_T_SPIN && theRecord[1] == 2) {
             score = (myLevel + 1) * 400;    // Mini T-spin Double
         } else {    // Full T-spin
             switch (theRecord[1]) {
@@ -212,7 +215,6 @@ public class ScoreCounter {
                     break;
             }
         }
-        System.out.println(score);
         return score;
     }
 
@@ -225,29 +227,29 @@ public class ScoreCounter {
      */
     private int scoreBackToBack(final int[] theRecord, final boolean theKick) {
         int score = 0;
-        // Not same type as previous line clear
-        if (!Arrays.equals(theRecord, myBackToBack)) {
+        // Same type as previous line clear
+        if (Arrays.equals(theRecord, myBackToBack)) {
+            switch (theRecord[0]) {
+                case TPiece.MINI_T_SPIN:     // Mini T-spin
+                    score = 300 * theRecord[1];
+                    break;
+                case TPiece.FULL_T_SPIN:     // Full T-spin
+                    score = 1200 + 600 * (theRecord[1] - 1);
+                    break;
+                case TETRIS:     // Tetris
+                    score = 1200;
+                    break;
+                default:
+                    break;
+            }
+        // Not same type
+        } else {
             // Full and mini T-spin
-            if ((theRecord[0] == 1 && theRecord[1] == 2) || theRecord[0] == 3) {
+            if ((theRecord[0] == TPiece.MINI_T_SPIN && theRecord[1] == 2) || theRecord[0] == TPiece.FULL_T_SPIN) {
                 score = (int) (scoreTSpin(theRecord, theKick) * 1.5);
             // Tetris
             } else {
                 score = (int) (scoreRegular(theRecord[1]) * 1.5);
-            }
-        // Same type
-        } else {
-            switch (theRecord[0]) {
-                case 1:     // Mini T-spin
-                    score = 300 * theRecord[1];
-                    break;
-                case 2:     // Tetris
-                    score = 1200;
-                    break;
-                case 3:     // Full T-spin
-                    score = 1200 + 600 * (theRecord[1] - 1);
-                    break;
-                default:
-                    break;
             }
         }
         return score;

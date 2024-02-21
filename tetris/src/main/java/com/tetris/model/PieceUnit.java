@@ -1,4 +1,4 @@
-package com.tetris.pieces;
+package com.tetris.model;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

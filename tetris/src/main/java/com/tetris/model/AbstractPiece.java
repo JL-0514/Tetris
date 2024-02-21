@@ -1,9 +1,6 @@
-package com.tetris.pieces;
+package com.tetris.model;
 
 import java.util.Random;
-
-import com.tetris.model.GameSpace;
-
 import java.awt.Color;
 
 /**
@@ -26,7 +23,7 @@ public class AbstractPiece implements Piece {
         {{0, 0}, {0, -1}, {-1, -1}, {2, 0}, {2, -1}}, 
         {{0, 0}, {0, 1}, {1, 1}, {-2, 0}, {-2, 1}}, 
         {{0, 0}, {0, 1}, {-1, 1}, {2, 0}, {2, 1}}, 
-        {{0, 0}, {0 ,-1}, {1, -1}, {-2, 0}, {-2, -1}}
+        {{0, 0}, {0, -1}, {1, -1}, {-2, 0}, {-2, -1}}
     };
 
     /** Used to select random shape from the piece. */
@@ -142,6 +139,9 @@ public class AbstractPiece implements Piece {
 
     /**
      * Rotate the piece clockwise by 90 degrees.
+     * This checks possible wall kicks when a rugular rotation fails. The order of wall kick is fixed, 
+     * which means it should only perform a wall kick when all previous wall kick fail. 
+     * If all wall kick failed, the rotation fails.
      * 
      * @param theSpace The game space.
      * @return An array [row, column] that represent how many rows and columns to move when rotating.
@@ -166,6 +166,9 @@ public class AbstractPiece implements Piece {
 
     /**
      * Rotate the piece counterclockwise by 90 degrees.
+     * This checks possible wall kicks when a rugular rotation fails. The order of wall kick is fixed, 
+     * which means it should only perform a wall kick when all previous wall kick fail. 
+     * If all wall kick failed, the rotation fails.
      * 
      * @param theSpace The game space.
      * @return An array [row, column] that represent how many rows and columns to move when rotating.

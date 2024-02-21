@@ -1,45 +1,45 @@
-package com.tetris.pieces;
+package com.tetris.model;
 
 import java.awt.Color;
 
 /**
- * The J-Piece.
- * Overall color: blue green.
+ * The L-Piece.
+ * Overall color: yellow orange.
  * 
  * @author Jiameng Li
  * @version 1.0
  */
-public class JPiece extends AbstractPiece {
+public class LPiece extends AbstractPiece {
 
     /** All possible shapes of the piece. */
     private static final int[][][] ALL_SHAPES = {
         {
-            {1, 0, 0},
+            {0, 0, 1},
             {1, 1, 1},
             {0, 0, 0}
         },
         {
-            {0, 1, 1},
             {0, 1, 0},
-            {0, 1, 0}
+            {0, 1, 0},
+            {0, 1, 1}
         },
         {
             {0, 0, 0},
             {1, 1, 1},
-            {0, 0, 1}
+            {1, 0, 0}
         }, 
         {
+            {1, 1, 0},
             {0, 1, 0},
-            {0, 1, 0},
-            {1, 1, 0}
+            {0, 1, 0}
         }
     };
 
     /**
-     * Create a J-Piece.
+     * Create a L-Piece.
      */
-    public JPiece() {
-        super(ALL_SHAPES, new Color(93, 214, 244), new Color(13, 152, 186), null);
+    public LPiece() {
+        super(ALL_SHAPES, new Color(255, 233, 204), new Color(255, 174, 66), null);
     }
     
 }

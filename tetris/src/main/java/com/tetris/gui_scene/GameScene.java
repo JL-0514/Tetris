@@ -233,7 +233,7 @@ public class GameScene extends JPanel{
                 gameOver();
             }
             requestFocusInWindow();
-            myGameSpace.start();
+            myGameSpace.newGame();
             mySoftDropping = false;
             myScore.setText("0");
             myLevel.setText("0");

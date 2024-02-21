@@ -1,4 +1,4 @@
-package com.tetris.pieces;
+package com.tetris.model;
 
 import java.awt.Color;
 
@@ -10,6 +10,12 @@ import java.awt.Color;
  * @version 1.0
  */
 public class TPiece extends AbstractPiece {
+
+    /** Number that represent mini T-spin. */
+    public static final int MINI_T_SPIN = 1;
+
+    /** Number that represent full T-spin. */
+    public static final int FULL_T_SPIN = 2;
 
     /** All possible shapes of the piece. */
     private static final int[][][] ALL_SHAPES = {
@@ -83,10 +89,10 @@ public class TPiece extends AbstractPiece {
             }
             // Full T-spin
             if (u1 != null && u2 != null) {
-                spin = 2;
+                spin = FULL_T_SPIN;
             // Mini T-spin
             } else if (u1 == null ^ u2 == null) {
-                spin = 1;
+                spin = MINI_T_SPIN;
             }
         }
         return spin;

@@ -5,16 +5,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Random;
 
-import com.tetris.pieces.IPiece;
-import com.tetris.pieces.JPiece;
-import com.tetris.pieces.LPiece;
-import com.tetris.pieces.OPiece;
-import com.tetris.pieces.Piece;
-import com.tetris.pieces.PieceUnit;
-import com.tetris.pieces.SPiece;
-import com.tetris.pieces.TPiece;
-import com.tetris.pieces.ZPiece;
-
 /**
  * The game space contains all the pieces used in the game.
  * 
@@ -153,6 +143,15 @@ public class GameSpace {
     }
 
     /**
+     * Change the current piece to the given piece.
+     * 
+     * @param thePiece The new current piece.
+     */
+    protected void setCurrentPiece(final Piece thePiece) {
+        myCurrentPiece = thePiece;
+    }
+
+    /**
      * Perform a hard drop on the current piece and return the number of lines dropped.
      * 
      * @return The number of lines dropped.
@@ -208,7 +207,7 @@ public class GameSpace {
                 if (row > 20 || row < 0 || col > 13 || col < 0) {
                     surrounding[r][c] = WALL;
                 } else {
-                    surrounding[r][c] = myPieces[myRow - i + theDown][myColumn + c + theRight];
+                    surrounding[r][c] = myPieces[row][col];
                 }
             }
         }
@@ -256,12 +255,14 @@ public class GameSpace {
                     lines++;
                 }
             }
-            if (lines > 0 || (lines == 0 && myTSpin == 2)) {
-                theCounter.addLine(lines, myTSpin == 1, myTSpin == 2, myHasKick); 
-                if (myTSpin == 2 && lines > 1) {    // Prevent adding additional score
-                    myTSpin = 0;
-                }
+            // Add score
+            if (lines > 0) {
+                theCounter.addLine(lines, myTSpin == TPiece.MINI_T_SPIN, myTSpin == TPiece.FULL_T_SPIN, myHasKick); 
             }
+        }
+        // Add score for full T-spin no line
+        if (cleared == 0 && myTSpin == TPiece.FULL_T_SPIN) {
+            theCounter.addLine(0, false, true, myHasKick);
         }
     }
 
@@ -329,7 +330,7 @@ public class GameSpace {
     /**
      * Set the game space to the starting setup.
      */
-    public void start() {
+    public void newGame() {
         myCurrentPiece = myAllPieces[myRand.nextInt(myAllPieces.length)];
         myNextPiece = myAllPieces[myRand.nextInt(myAllPieces.length)];
         myRow = 0;
