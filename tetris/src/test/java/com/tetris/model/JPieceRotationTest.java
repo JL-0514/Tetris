@@ -41,11 +41,11 @@ public class JPieceRotationTest {
      */
     @Test
     public void testZeroToOneRotate() {
-        // Test 0
-        // Test 1
-        // Test 2
-        // Test 3
-        // Test 4
+        // Test 0 {0, 0}
+        // Test 1 {0, -1}
+        // Test 2 {-1, -1}
+        // Test 3 {2, 0}
+        // Test 4 {2, -1}
     }
 
     /**
@@ -55,11 +55,11 @@ public class JPieceRotationTest {
      */
     @Test
     public void testOneToTwoRotate() {
-        // Test 0
-        // Test 1
-        // Test 2
-        // Test 3
-        // Test 4
+        // Test 0 {0, 0}
+        // Test 1 {0, 1}
+        // Test 2 {1, 1}
+        // Test 3 {-2, 0}
+        // Test 4 {-2, 1}
     }
 
     /**
@@ -69,11 +69,11 @@ public class JPieceRotationTest {
      */
     @Test
     public void testTwoToThreeRotate() {
-        // Test 0
-        // Test 1
-        // Test 2
-        // Test 3
-        // Test 4
+        // Test 0 {0, 0}
+        // Test 1 {0, 1}
+        // Test 2 {-1, 1}
+        // Test 3 {2, 0}
+        // Test 4 {2, 1}
     }
 
     /**
@@ -83,11 +83,11 @@ public class JPieceRotationTest {
      */
     @Test
     public void testThreeToZeroRotate() {
-        // Test 0
-        // Test 1
-        // Test 2
-        // Test 3
-        // Test 4
+        // Test 0 {0, 0}
+        // Test 1 {0, -1}
+        // Test 2 {1, -1}
+        // Test 3 {-2, 0}
+        // Test 4 {-2, -1}
     }
 
     /**
@@ -97,11 +97,11 @@ public class JPieceRotationTest {
      */
     @Test
     public void testZeroToThreeRotate() {
-        // Test 0
-        // Test 1
-        // Test 2
-        // Test 3
-        // Test 4
+        // Test 0 {0, 0}
+        // Test 1 {0, 1}
+        // Test 2 {-1, 1}
+        // Test 3 {2, 0}
+        // Test 4 {2, 1}
     }
 
     /**
@@ -111,11 +111,11 @@ public class JPieceRotationTest {
      */
     @Test
     public void testThreeToTwoRotate() {
-        // Test 0
-        // Test 1
-        // Test 2
-        // Test 3
-        // Test 4
+        // Test 0 {0, 0}
+        // Test 1 {0, -1}
+        // Test 2 {1, -1}
+        // Test 3 {-2, 0}
+        // Test 4 {-2, -1}
     }
 
     /**
@@ -125,11 +125,11 @@ public class JPieceRotationTest {
      */
     @Test
     public void testTwoToOneRotate() {
-        // Test 0
-        // Test 1
-        // Test 2
-        // Test 3
-        // Test 4
+        // Test 0 {0, 0}
+        // Test 1 {0, -1}
+        // Test 2 {-1, -1}
+        // Test 3 {2, 0}
+        // Test 4 {2, -1}
     }
 
     /**
@@ -139,11 +139,11 @@ public class JPieceRotationTest {
      */
     @Test
     public void testOneToZeroRotate() {
-        // Test 0
-        // Test 1
-        // Test 2
-        // Test 3
-        // Test 4
+        // Test 0 {0, 0}
+        // Test 1 {0, 1}
+        // Test 2 {1, 1}
+        // Test 3 {-2, 0}
+        // Test 4 {-2, 1}
     }
 
     /**
