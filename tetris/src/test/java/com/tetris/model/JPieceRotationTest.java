@@ -1,5 +1,6 @@
 package com.tetris.model;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -42,10 +43,66 @@ public class JPieceRotationTest {
     @Test
     public void testZeroToOneRotate() {
         // Test 0 {0, 0}
+        myPiece.setCurrentShapeIdx(0);
+        myGameSpace.dropCurrent(17);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, null, null, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp}
+        });
+        int[] move = myPiece.rotateClockwise(myGameSpace);
+        assertEquals(0, move[0]);
+        assertEquals(0, move[1]);
+
         // Test 1 {0, -1}
+        myPiece.setCurrentShapeIdx(0);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, null, temp, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateClockwise(myGameSpace);
+        assertEquals(0, move[0]);
+        assertEquals(-1, move[1]);
+
         // Test 2 {-1, -1}
+        myPiece.setCurrentShapeIdx(0);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateClockwise(myGameSpace);
+        assertEquals(-1, move[0]);
+        assertEquals(-1, move[1]);
+
         // Test 3 {2, 0}
+        myPiece.setCurrentShapeIdx(0);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, null, null, null, temp, temp, temp, temp, temp, temp},
+            {temp, null, null, null, temp, temp, temp, temp, temp, temp},
+            {temp, null, null, null, null, null, temp, temp, temp, temp},
+            {temp, temp, temp, temp, null, null, temp, temp, temp, temp},
+            {temp, temp, temp, temp, null, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, null, temp, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateClockwise(myGameSpace);
+        assertEquals(2, move[0]);
+        assertEquals(0, move[1]);
+
         // Test 4 {2, -1}
+        myPiece.setCurrentShapeIdx(0);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, null, null, null, temp, temp, temp, temp, temp, temp},
+            {temp, null, null, null, temp, temp, temp, temp, temp, temp},
+            {temp, null, null, null, null, null, temp, temp, temp, temp},
+            {temp, temp, temp, null, null, temp, temp, temp, temp, temp},
+            {temp, temp, temp, null, temp, temp, temp, temp, temp, temp},
+            {temp, temp, temp, null, temp, temp, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateClockwise(myGameSpace);
+        assertEquals(2, move[0]);
+        assertEquals(-1, move[1]);
     }
 
     /**
@@ -56,10 +113,60 @@ public class JPieceRotationTest {
     @Test
     public void testOneToTwoRotate() {
         // Test 0 {0, 0}
+        myPiece.setCurrentShapeIdx(1);
+        myGameSpace.dropCurrent(18);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, temp, null, null, null, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp}
+        });
+        int[] move = myPiece.rotateClockwise(myGameSpace);
+        assertEquals(0, move[0]);
+        assertEquals(0, move[1]);
+
         // Test 1 {0, 1}
+        myPiece.setCurrentShapeIdx(1);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, temp, null, temp, null, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateClockwise(myGameSpace);
+        assertEquals(0, move[0]);
+        assertEquals(1, move[1]);
+
         // Test 2 {1, 1}
+        myPiece.setCurrentShapeIdx(1);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, temp, null, null, temp, temp, temp, temp},
+            {temp, temp, temp, temp, null, null, null, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, null, temp, temp, temp}
+        });
+        move = myPiece.rotateClockwise(myGameSpace);
+        assertEquals(1, move[0]);
+        assertEquals(1, move[1]);
+
         // Test 3 {-2, 0}
+        myPiece.setCurrentShapeIdx(1);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, temp, null, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, null, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateClockwise(myGameSpace);
+        assertEquals(-2, move[0]);
+        assertEquals(0, move[1]);
+
         // Test 4 {-2, 1}
+        myPiece.setCurrentShapeIdx(1);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, temp, null, null, null, temp, temp, temp},
+            {temp, temp, temp, temp, null, null, null, temp, temp, temp},
+            {temp, temp, temp, temp, null, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, null, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateClockwise(myGameSpace);
+        assertEquals(-2, move[0]);
+        assertEquals(1, move[1]);
     }
 
     /**
@@ -70,10 +177,64 @@ public class JPieceRotationTest {
     @Test
     public void testTwoToThreeRotate() {
         // Test 0 {0, 0}
+        myPiece.setCurrentShapeIdx(2);
+        myGameSpace.dropCurrent(17);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, null, null, null, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp}
+        });
+        int[] move = myPiece.rotateClockwise(myGameSpace);
+        assertEquals(0, move[0]);
+        assertEquals(0, move[1]);
+
         // Test 1 {0, 1}
+        myPiece.setCurrentShapeIdx(2);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, temp, null, null, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateClockwise(myGameSpace);
+        assertEquals(0, move[0]);
+        assertEquals(1, move[1]);
+
         // Test 2 {-1, 1}
+        myPiece.setCurrentShapeIdx(2);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, temp, temp, null, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateClockwise(myGameSpace);
+        assertEquals(-1, move[0]);
+        assertEquals(1, move[1]);
+
         // Test 3 {2, 0}
+        myPiece.setCurrentShapeIdx(2);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, temp, temp, temp, null, null, null, temp},
+            {temp, temp, temp, null, null, null, null, null, null, temp},
+            {temp, temp, temp, temp, null, null, null, null, null, temp},
+            {temp, temp, temp, temp, null, temp, temp, temp, temp, temp},
+            {temp, temp, temp, null, null, temp, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateClockwise(myGameSpace);
+        assertEquals(2, move[0]);
+        assertEquals(0, move[1]);
+
         // Test 4 {2, 1}
+        myPiece.setCurrentShapeIdx(2);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, temp, temp, temp, null, null, null, temp},
+            {temp, temp, temp, null, null, null, null, null, null, temp},
+            {temp, temp, temp, temp, temp, null, null, null, null, temp},
+            {temp, temp, temp, temp, temp, null, temp, temp, temp, temp},
+            {temp, temp, temp, temp, null, null, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateClockwise(myGameSpace);
+        assertEquals(2, move[0]);
+        assertEquals(1, move[1]);
     }
 
     /**
@@ -84,10 +245,57 @@ public class JPieceRotationTest {
     @Test
     public void testThreeToZeroRotate() {
         // Test 0 {0, 0}
+        myPiece.setCurrentShapeIdx(3);
+        myGameSpace.dropCurrent(19);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, null, null, temp, temp, temp, temp, temp}
+        });
+        int[] move = myPiece.rotateClockwise(myGameSpace);
+        assertEquals(0, move[0]);
+        assertEquals(0, move[1]);
+
         // Test 1 {0, -1}
+        myPiece.setCurrentShapeIdx(3);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, null, null, null, temp, temp, temp, temp, temp},
+            {temp, temp, temp, null, null, temp, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateClockwise(myGameSpace);
+        assertEquals(0, move[0]);
+        assertEquals(-1, move[1]);
+
         // Test 2 {1, -1}
+        myPiece.setCurrentShapeIdx(3);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, null, temp, null, null, temp, temp, temp, temp},
+            {temp, temp, null, null, null, null, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateClockwise(myGameSpace);
+        assertEquals(1, move[0]);
+        assertEquals(-1, move[1]);
+
         // Test 3 {-2, 0}
+        myPiece.setCurrentShapeIdx(3);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, temp, null, null, temp, temp, temp, temp},
+            {temp, temp, temp, null, null, null, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateClockwise(myGameSpace);
+        assertEquals(-2, move[0]);
+        assertEquals(0, move[1]);
+        
         // Test 4 {-2, -1}
+        myPiece.setCurrentShapeIdx(3);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, null, temp, null, null, temp, temp, temp, temp},
+            {temp, temp, null, null, null, null, temp, temp, temp, temp},
+            {temp, temp, temp, temp, null, null, temp, temp, temp, temp},
+            {temp, temp, temp, temp, null, null, temp, temp, temp, temp},
+            {temp, temp, temp, null, null, null, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateClockwise(myGameSpace);
+        assertEquals(-2, move[0]);
+        assertEquals(-1, move[1]);
     }
 
     /**
@@ -98,10 +306,64 @@ public class JPieceRotationTest {
     @Test
     public void testZeroToThreeRotate() {
         // Test 0 {0, 0}
+        myPiece.setCurrentShapeIdx(0);
+        myGameSpace.dropCurrent(17);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, null, null, null, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp}
+        });
+        int[] move = myPiece.rotateCounterclockwise(myGameSpace);
+        assertEquals(0, move[0]);
+        assertEquals(0, move[1]);
+
         // Test 1 {0, 1}
+        myPiece.setCurrentShapeIdx(0);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, temp, null, null, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateCounterclockwise(myGameSpace);
+        assertEquals(0, move[0]);
+        assertEquals(1, move[1]);
+
         // Test 2 {-1, 1}
+        myPiece.setCurrentShapeIdx(0);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateCounterclockwise(myGameSpace);
+        assertEquals(-1, move[0]);
+        assertEquals(1, move[1]);
+
         // Test 3 {2, 0}
+        myPiece.setCurrentShapeIdx(0);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, null, null, null, temp, temp, temp, temp, temp, temp},
+            {temp, null, null, null, null, null, temp, temp, temp, temp},
+            {temp, temp, temp, temp, null, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, null, temp, temp, temp, temp, temp},
+            {temp, temp, temp, null, null, temp, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateCounterclockwise(myGameSpace);
+        assertEquals(2, move[0]);
+        assertEquals(0, move[1]);
+
         // Test 4 {2, 1}
+        myPiece.setCurrentShapeIdx(0);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, null, null, null, temp, temp, temp, temp, temp, temp},
+            {temp, null, null, null, null, null, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, null, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, null, temp, temp, temp, temp},
+            {temp, temp, temp, temp, null, null, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateCounterclockwise(myGameSpace);
+        assertEquals(2, move[0]);
+        assertEquals(1, move[1]);
     }
 
     /**
@@ -112,10 +374,59 @@ public class JPieceRotationTest {
     @Test
     public void testThreeToTwoRotate() {
         // Test 0 {0, 0}
+        myPiece.setCurrentShapeIdx(3);
+        myGameSpace.dropCurrent(18);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, null, null, null, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp}
+        });
+        int[] move = myPiece.rotateCounterclockwise(myGameSpace);
+        assertEquals(0, move[0]);
+        assertEquals(0, move[1]);
+
         // Test 1 {0, -1}
+        myPiece.setCurrentShapeIdx(3);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, null, null, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateCounterclockwise(myGameSpace);
+        assertEquals(0, move[0]);
+        assertEquals(-1, move[1]);
+
         // Test 2 {1, -1}
+        myPiece.setCurrentShapeIdx(3);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, null, null, temp, temp, temp, temp, temp},
+            {temp, temp, null, null, null, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, null, temp, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateCounterclockwise(myGameSpace);
+        assertEquals(1, move[0]);
+        assertEquals(-1, move[1]);
+
         // Test 3 {-2, 0}
+        myPiece.setCurrentShapeIdx(3);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, null, null, temp, temp, temp, temp, temp},
+            {temp, temp, temp, null, null, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateCounterclockwise(myGameSpace);
+        assertEquals(-2, move[0]);
+        assertEquals(0, move[1]);
+
         // Test 4 {-2, -1}
+        myPiece.setCurrentShapeIdx(3);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, null, null, temp, temp, temp, temp, temp},
+            {temp, temp, temp, null, null, temp, temp, temp, temp, temp},
+            {temp, temp, temp, null, null, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateCounterclockwise(myGameSpace);
+        assertEquals(-2, move[0]);
+        assertEquals(-1, move[1]);
     }
 
     /**
@@ -126,10 +437,64 @@ public class JPieceRotationTest {
     @Test
     public void testTwoToOneRotate() {
         // Test 0 {0, 0}
+        myPiece.setCurrentShapeIdx(2);
+        myGameSpace.dropCurrent(17);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, null, null, null, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp}
+        });
+        int[] move = myPiece.rotateCounterclockwise(myGameSpace);
+        assertEquals(0, move[0]);
+        assertEquals(0, move[1]);
+
         // Test 1 {0, -1}
+        myPiece.setCurrentShapeIdx(2);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, null, temp, null, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateCounterclockwise(myGameSpace);
+        assertEquals(0, move[0]);
+        assertEquals(-1, move[1]);
+
         // Test 2 {-1, -1}
+        myPiece.setCurrentShapeIdx(2);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, temp, temp, null, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, temp, temp, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateCounterclockwise(myGameSpace);
+        assertEquals(-1, move[0]);
+        assertEquals(-1, move[1]);
+
         // Test 3 {2, 0}
+        myPiece.setCurrentShapeIdx(2);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, temp, temp, temp, null, null, null, temp},
+            {temp, temp, temp, null, null, null, null, null, null, temp},
+            {temp, temp, temp, temp, null, null, null, null, null, temp},
+            {temp, temp, temp, temp, null, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, null, temp, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateCounterclockwise(myGameSpace);
+        assertEquals(2, move[0]);
+        assertEquals(0, move[1]);
+
         // Test 4 {2, -1}
+        myPiece.setCurrentShapeIdx(2);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, temp, temp, temp, null, null, null, temp},
+            {temp, temp, temp, null, null, null, null, null, null, temp},
+            {temp, temp, temp, null, null, null, null, null, null, temp},
+            {temp, temp, temp, null, temp, temp, temp, temp, temp, temp},
+            {temp, temp, temp, null, temp, temp, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateCounterclockwise(myGameSpace);
+        assertEquals(2, move[0]);
+        assertEquals(-1, move[1]);
     }
 
     /**
@@ -140,10 +505,57 @@ public class JPieceRotationTest {
     @Test
     public void testOneToZeroRotate() {
         // Test 0 {0, 0}
+        myPiece.setCurrentShapeIdx(1);
+        myGameSpace.dropCurrent(19);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, temp, null, temp, temp, temp, temp, temp}
+        });
+        int[] move = myPiece.rotateCounterclockwise(myGameSpace);
+        assertEquals(0, move[0]);
+        assertEquals(0, move[1]);
+
         // Test 1 {0, 1}
+        myPiece.setCurrentShapeIdx(1);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, temp, null, null, null, temp, temp, temp},
+            {temp, temp, temp, temp, null, temp, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateCounterclockwise(myGameSpace);
+        assertEquals(0, move[0]);
+        assertEquals(1, move[1]);
+
         // Test 2 {1, 1}
+        myPiece.setCurrentShapeIdx(1);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, temp, null, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, null, null, null, temp, temp, temp}
+        });
+        move = myPiece.rotateCounterclockwise(myGameSpace);
+        assertEquals(1, move[0]);
+        assertEquals(1, move[1]);
+
         // Test 3 {-2, 0}
+        myPiece.setCurrentShapeIdx(1);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, temp, null, null, temp, temp, temp, temp},
+            {temp, temp, temp, temp, null, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, null, temp, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateCounterclockwise(myGameSpace);
+        assertEquals(-2, move[0]);
+        assertEquals(0, move[1]);
+
         // Test 4 {-2, 1}
+        myPiece.setCurrentShapeIdx(1);
+        TestHelper.copySurrounding(myGameSpace.getPieces(), new PieceUnit[][]{
+            {temp, temp, temp, temp, null, null, null, temp, temp, temp},
+            {temp, temp, temp, temp, null, null, temp, temp, temp, temp},
+            {temp, temp, temp, temp, null, temp, temp, temp, temp, temp},
+            {temp, temp, temp, temp, null, temp, temp, temp, temp, temp}
+        });
+        move = myPiece.rotateCounterclockwise(myGameSpace);
+        assertEquals(-2, move[0]);
+        assertEquals(1, move[1]);
     }
 
     /**
