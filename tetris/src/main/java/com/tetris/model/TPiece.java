@@ -55,7 +55,7 @@ public class TPiece extends AbstractPiece {
      * In a full T-spin, the piece face two surrounding pieces after the rotation
      * while mini T-spin faces one.
      * 
-     * @return 0 if not T-spin, 1 if mini T-spin, 2 if full T-spin.
+     * @return 0 if not T-spin, MINI_T_SPIN if mini T-spin, FULL_T_SPIN if full T-spin.
      */
     public int isTSpin(final PieceUnit[][] theSurrounding) {
         int spin = 0;
